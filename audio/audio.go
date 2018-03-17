@@ -2,6 +2,7 @@ package audio
 
 import (
   "fmt"
+  "unsafe"
 )
 
 type Audio struct {
@@ -111,6 +112,47 @@ func (a1* Audio) Reverse() (a2 *Audio, err error) {
 
   for i := int64(0); i < a1.Size; i++ {
     out.Data[i] = a1.Data[a1.Size - i - 1]
+  }
+
+  return &out, nil
+}
+
+func (a1* Audio) Cut(start int64, end int64) (a2 *Audio, err error) {
+  if end >= a1.NumberOfSamples {
+    return nil, &AudioError { Message: fmt.Sprintf("invaild audio range %d - %d\n", start, end) }
+  }
+
+  sb := start * int64(unsafe.Sizeof(a1.Data[0])) * int64(a1.Channel)
+  eb := (end + 1) * int64(unsafe.Sizeof(a1.Data[0])) * int64(a1.Channel)
+  
+  out := Audio {
+    Data: make([]byte, eb - sb),
+    Channel: a1.Channel,
+    Size: eb - sb,
+    SamplingRate: a1.SamplingRate,
+    NumberOfSamples: end - start + 1,
+    Length: (end - start + 1) / int64(a1.SamplingRate),
+  }
+  
+  for i := sb; i < eb; i++ {
+    out.Data[i - sb] = a1.Data[i]
+  }
+
+  return &out, nil
+}
+
+func (a1* Audio) Amplify(vol Volume) (a2 *Audio, err error) {
+  out := Audio {
+    Data: make([]byte, a1.Size),
+    Channel: a1.Channel,
+    Size: a1.Size,
+    SamplingRate: a1.SamplingRate,
+    NumberOfSamples: a1.NumberOfSamples,
+    Length: a1.Length,
+  }
+  
+  for i := int64(0); i < a1.Size; i++ {
+    out.Data[i] = uint8(vol.C1 * float32(a1.Data[i]))
   }
 
   return &out, nil

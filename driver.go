@@ -2,7 +2,7 @@ package main
 
 import (
 	"go-packages/audio"
-	//"fmt"
+	"fmt"
 	"unsafe"
 	"os"
 )
@@ -10,7 +10,7 @@ import (
 //func load()
 
 func main() {
-	f, err := os.Open("C:\\Users\\djaye\\Downloads\\sample_input\\beez18sec_44100_signed_8bit_mono.raw")
+	f, err := os.Open("/home/ayaovi/Downloads/input_files/beez18sec_44100_signed_8bit_mono.raw")
 	if err != nil {
 		panic(err)
 	}
@@ -37,10 +37,10 @@ func main() {
 	a.NumberOfSamples = a.Size / (int64(unsafe.Sizeof(a.Data[0])) * int64(a.Channel))
 	a.Length = a.NumberOfSamples / int64(a.SamplingRate)
 
-	//fmt.Printf("size of data is %d bytes.\n", a.Size)
-	//fmt.Printf("samplingRate is %d bytes long.\n", a.SamplingRate)
-	//fmt.Printf("numberOfSamples is %d bytes long.\n", a.NumberOfSamples)
-	//fmt.Printf("length is %d bytes long.\n", a.Length)
+	fmt.Printf("size of data is %d bytes.\n", a.Size)
+	fmt.Printf("samplingRate is %d bytes long.\n", a.SamplingRate)
+	fmt.Printf("numberOfSamples is %d bytes long.\n", a.NumberOfSamples)
+	fmt.Printf("length is %d bytes long.\n", a.Length)
   
   //for i := 0; i < 10; i++ {
     //fmt.Printf("index %d: %d\n", i ,a.Data[i])
