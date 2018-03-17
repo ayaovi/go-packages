@@ -98,3 +98,20 @@ func (a1* Audio) Concat(a2* Audio) (a3 *Audio, err error) {
 
   return &out, nil
 }
+
+func (a1* Audio) Reverse() (a2 *Audio, err error) {
+  out := Audio {
+    Data: make([]byte, a1.Size),
+    Channel: a1.Channel,
+    Size: a1.Size,
+    SamplingRate: a1.SamplingRate,
+    NumberOfSamples: a1.NumberOfSamples,
+    Length: a1.Length,
+  }
+
+  for i := int64(0); i < a1.Size; i++ {
+    out.Data[i] = a1.Data[a1.Size - i - 1]
+  }
+
+  return &out, nil
+}

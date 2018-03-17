@@ -7,7 +7,7 @@ import (
 
 func TestAudio(t *testing.T) {
 	a0 := Audio {
-		Data: []byte{1, 1, 1, 1},
+		Data: []byte{1, 2, 3, 4},
 		Channel: 1,
 		Size: 4,
 		SamplingRate: 1,
@@ -23,7 +23,7 @@ func TestAudio(t *testing.T) {
 	})
   
   add0 := Audio {
-		Data: []byte{2, 2, 2, 2},
+		Data: []byte{2, 4, 6, 8},
 		Channel: 1,
 		Size: 4,
 		SamplingRate: 1,
@@ -84,7 +84,26 @@ func TestAudio(t *testing.T) {
 			t.Errorf("Audio concatenation should Pass.")
 		}
 		if !reflect.DeepEqual(concat, *out) {
-			t.Errorf("Audio addition was incorrect, got: %d, want: %d.", *out, concat)
+			t.Errorf("Audio concatenation was incorrect, got: %d, want: %d.", *out, concat)
+		}
+  })
+
+  reverse := Audio {
+		Data: []byte{4, 3, 2, 1},
+		Channel: 1,
+		Size: 4,
+		SamplingRate: 1,
+		NumberOfSamples: 4,
+		Length: 4,
+	}
+  
+  t.Run("Reverse", func(t *testing.T) {
+		out, err := a0.Reverse()
+		if err != nil {
+			t.Errorf("Audio reverse should Pass.")
+		}
+		if !reflect.DeepEqual(reverse, *out) {
+			t.Errorf("Audio reverse was incorrect, got: %d, want: %d.", *out, reverse)
 		}
 	})
 }
