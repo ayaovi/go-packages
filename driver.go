@@ -1,8 +1,8 @@
 package main
 
 import (
-	"audio"
-	"fmt"
+	"go-packages/audio"
+	//"fmt"
 	"unsafe"
 	"os"
 )
@@ -46,7 +46,7 @@ func main() {
     //fmt.Printf("index %d: %d\n", i ,a.Data[i])
   //}
   
-  out, _ := a.Plus(&a)
+  a.Plus(&a)
   
   //for i := 0; i < 10; i++ {
     //fmt.Printf("index %d: %d\n", i ,out.Data[i])

@@ -18,8 +18,8 @@ type AudioError struct {
 }
 
 type Volume struct {
-  C1 float
-  C2 float
+  C1 float32
+  C2 float32
 }
 
 func (ae *AudioError) Error() string {
@@ -43,7 +43,7 @@ func Compare(a1* Audio, a2* Audio) error {
   if a1.Length != a2.Length {
     return &AudioError { Message: fmt.Sprintf("mismatching audio length, %d and %d", a1.Length, a2.Length) }
   }
-  return nil,
+  return nil
 }
 
 func (a1* Audio) Plus(a2* Audio) (a3 *Audio, err error) {
@@ -72,5 +72,29 @@ func (a1* Audio) Times(a2* Audio) (a3 *Audio, err error) {
   if err := Compare(a1, a2); err != nil {
     return nil, err
   }
+  return nil, nil
+}
+
+func (a1* Audio) Concat(a2* Audio) (a3 *Audio, err error) {
+  if err := Compare(a1, a2); err != nil {
+    return nil, err
+  }
+  out := Audio {
+    Data: make([]byte, a1.Size + a2.Size),
+    Channel: a1.Channel,
+    Size: a1.Size + a2.Size,
+    SamplingRate: a1.SamplingRate,
+    NumberOfSamples: a1.NumberOfSamples,
+    Length: a1.Length + a1.Length,
+  }
+
+  for i := int64(0); i < a1.Size; i++ {
+    out.Data[i] = a1.Data[i]
+  }
+
+  for i := a1.Size; i < a1.Size + a2.Size; i++ {
+    out.Data[i] = a1.Data[i - a1.Size]
+  }
+
   return &out, nil
 }
