@@ -40,13 +40,13 @@ func main() {
 	fmt.Printf("size of data is %d bytes.\n", a.Size)
 	fmt.Printf("samplingRate is %d bytes long.\n", a.SamplingRate)
 	fmt.Printf("numberOfSamples is %d bytes long.\n", a.NumberOfSamples)
-	fmt.Printf("length is %d bytes long.\n", a.Length)
+	fmt.Printf("length is %d second(s).\n", a.Length)
   
   //for i := 0; i < 10; i++ {
     //fmt.Printf("index %d: %d\n", i ,a.Data[i])
   //}
   
-  a.Plus(&a)
+  // a.Plus(&a)
   
   //for i := 0; i < 10; i++ {
     //fmt.Printf("index %d: %d\n", i ,out.Data[i])
