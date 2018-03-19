@@ -3,6 +3,7 @@ package audio
 import (
 	"testing"
 	"reflect"
+	"math"
 )
 
 func TestAudio(t *testing.T) {
@@ -329,6 +330,30 @@ func TestAudio(t *testing.T) {
 		}
 		if !reflect.DeepEqual(amp_8S, *out) {
 			t.Errorf("Audio8S amplify was incorrect, got: %d, want: %d.", *out, amp_8S)
+		}
+	})
+
+	rms_8M := math.Sqrt(float64(5))
+
+  t.Run("Audio8M rms", func(t *testing.T) {
+		rms, err := a_8M_0.Rms()
+		if err != nil {
+			t.Errorf("Audio8M rms should Pass.")
+		}
+		if rms_8M == rms {
+			t.Errorf("Audio8M rms was incorrect, got: %f, want: %f.", rms, rms_8M)
+		}
+	})
+
+	rms_8S_1, rms_8S_2 := math.Sqrt(float64(5)), math.Sqrt(float64(5))
+
+  t.Run("Audio8S rms", func(t *testing.T) {
+		rms1, rms2, err := a_8S_0.Rms()
+		if err != nil {
+			t.Errorf("Audio8S amplify should Pass.")
+		}
+		if rms_8S_1 == rms1 && rms_8S_2 == rms2 {
+			t.Errorf("Audio8S amplify was incorrect, got: (%f, %f) want: (%f, %f).", rms1, rms2, rms_8S_1, rms_8S_2)
 		}
 	})
 }

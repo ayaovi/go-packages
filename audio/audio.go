@@ -2,6 +2,7 @@ package audio
 
 import (
   "fmt"
+  "math"
 )
 
 type Audio8M struct {
@@ -337,4 +338,51 @@ func (a1* Audio8S) Amplify(vol Volume) (a2 *Audio8S, err error) {
   }
 
   return &out, nil
+}
+
+func (a* Audio8M) Rms() (value float64, err error) {
+  sum := float64(0)
+  for _, v := range(a.Data) {
+    sum += float64(v * v)
+  }
+  return math.Sqrt(sum / float64(a.Size)), nil
+}
+
+func (a* Audio8S) Rms() (value1 float64, value2 float64 , err error) {
+  sum1 := float64(0)
+  sum2 := float64(0)
+  for _, v := range(a.Data) {
+    sum1 += float64(v.First * v.First)
+    sum2 += float64(v.Second * v.Second)
+  }
+  return math.Sqrt(sum1 / float64(a.Size)), math.Sqrt(sum2 / float64(a.Size)), nil
+}
+
+func (a1* Audio8M) Norm(rms_d float64) (a2* Audio8M, err error) {
+  //validate
+  rms_c, ex := a1.Rms()
+  if ex != nil {
+    return nil, ex
+  }
+  out := Audio8M {
+    Data: make([]byte, a1.Size),
+    Channel: a1.Channel,
+    Size: a1.Size,
+    SamplingRate: a1.SamplingRate,
+    NumberOfSamples: a1.NumberOfSamples,
+    Length: a1.Length,
+  }
+  for i := int64(0); i < a1.Size; i++ {
+
+  }
+}
+
+func (a* Audio8S) Rms() (value1 float64, value2 float64 , err error) {
+  sum1 := float64(0)
+  sum2 := float64(0)
+  for _, v := range(a.Data) {
+    sum1 += float64(v.First * v.First)
+    sum2 += float64(v.Second * v.Second)
+  }
+  return math.Sqrt(sum1 / float64(a.Size)), math.Sqrt(sum2 / float64(a.Size)), nil
 }
