@@ -356,4 +356,32 @@ func TestAudio(t *testing.T) {
 			t.Errorf("Audio8S amplify was incorrect, got: (%f, %f) want: (%f, %f).", rms1, rms2, rms_8S_1, rms_8S_2)
 		}
 	})
+
+	a_8M_2 := Audio8M {
+		Data: []byte{0, 0, 0, 1},
+		Channel: 1,
+		Size: 4,
+		SamplingRate: 1,
+		NumberOfSamples: 4,
+		Length: 4,
+	}
+
+	norm_8M := Audio8M {
+		Data: []byte{0, 0, 0, 2},
+		Channel: 1,
+		Size: 4,
+		SamplingRate: 1,
+		NumberOfSamples: 4,
+		Length: 4,
+	}
+
+	t.Run("Audio8M norm", func(t *testing.T) {
+		out, err := a_8M_2.Norm(1.0)
+		if err != nil {
+			t.Errorf("Audio8M norm should Pass.")
+		}
+		if reflect.DeepEqual(*out, norm_8M) {
+			t.Errorf("Audio8S norm was incorrect, got: %d want: %d.", *out, norm_8M)
+		}
+	})
 }

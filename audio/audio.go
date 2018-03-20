@@ -373,16 +373,28 @@ func (a1* Audio8M) Norm(rms_d float64) (a2* Audio8M, err error) {
     Length: a1.Length,
   }
   for i := int64(0); i < a1.Size; i++ {
-
+    out.Data[i] = uint8((rms_d * float64(a1.Data[1])) / rms_c);
   }
+  return &out, nil
 }
 
-func (a* Audio8S) Rms() (value1 float64, value2 float64 , err error) {
-  sum1 := float64(0)
-  sum2 := float64(0)
-  for _, v := range(a.Data) {
-    sum1 += float64(v.First * v.First)
-    sum2 += float64(v.Second * v.Second)
+func (a1* Audio8S) Norm(rms_d_1 float64, rms_d_2 float64) (a2* Audio8S, err error) {
+  //validate
+  rms_c_1, rms_c_2, ex := a1.Rms()
+  if ex != nil {
+    return nil, ex
   }
-  return math.Sqrt(sum1 / float64(a.Size)), math.Sqrt(sum2 / float64(a.Size)), nil
+  out := Audio8S {
+    Data: make([]Pair8, a1.Size),
+    Channel: a1.Channel,
+    Size: a1.Size,
+    SamplingRate: a1.SamplingRate,
+    NumberOfSamples: a1.NumberOfSamples,
+    Length: a1.Length,
+  }
+  for i := int64(0); i < a1.Size; i++ {
+    out.Data[i].First = uint8((rms_d_1 * float64(a1.Data[1].First)) / rms_c_1);
+    out.Data[i].Second = uint8((rms_d_2 * float64(a1.Data[1].Second)) / rms_c_2);
+  }
+  return &out, nil
 }
