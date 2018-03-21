@@ -394,7 +394,7 @@ func TestAudio(t *testing.T) {
 		if err != nil {
 			t.Errorf("Audio8M norm should Pass.")
 		}
-		if reflect.DeepEqual(*out, norm_8M) {
+		if !reflect.DeepEqual(*out, norm_8M) {
 			t.Errorf("Audio8M norm was incorrect, got: %d want: %d.", *out, norm_8M)
 		}
 	})
