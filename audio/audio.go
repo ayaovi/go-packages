@@ -64,16 +64,20 @@ func (a* Audio) Validate() error {
   return nil
 }
 
-func clamp8(value1 uint8, value2 uint8) uint8 {
-  max := uint8(255)
-  if value2 < (max - value1) { return value1 + value2 }
-  return max
-}
-
-func clamp16(value1 uint16, value2 uint16) uint16 {
-  max := uint16(65535)
-  if value2 < (max - value1) { return value1 + value2 }
-  return max
+func clamp(value interface{}, size uint8) interface{} {
+  switch size {
+  case uint8(8):
+    if value.(uint16) > uint16(255) {
+      return uint8(255)
+    }
+    return uint8(value.(uint16))
+  case uint8(16):
+    if value.(uint32) > uint32(65535) {
+      return uint16(65535)
+    }
+    return uint16(value.(uint32))
+  }
+  return nil
 }
 
 func Compare(a1* Audio, a2* Audio) error {
@@ -102,7 +106,8 @@ func (a1* Audio) Plus(a2* Audio) (a3 *Audio, err error) {
   case []uint8:
     a3.Data = make([]uint8, a1.Size)
     for i := int64(0); i < a1.Size; i++ {
-      a3.Data.([]uint8)[i] = clamp8(a1.Data.([]uint8)[i], a2.Data.([]uint8)[i])
+      a3.Data.([]uint8)[i] = clamp(uint16(a1.Data.([]uint8)[i]) + uint16(a2.Data.([]uint8)[i]), 
+      uint8(8)).(uint8)
     }
     break
   case []uint16:
@@ -113,10 +118,10 @@ func (a1* Audio) Plus(a2* Audio) (a3 *Audio, err error) {
     switch a1.Data.([]Pair)[0].First.(type){
       case uint8:
         for i := int64(0); i < a1.Size; i++ {
-          a3.Data.([]Pair)[i].First = clamp8(a1.Data.([]Pair)[i].First.(uint8), 
-          a2.Data.([]Pair)[i].First.(uint8))
-          a3.Data.([]Pair)[i].Second = clamp8(a1.Data.([]Pair)[i].Second.(uint8), 
-          a2.Data.([]Pair)[i].Second.(uint8))
+          a3.Data.([]Pair)[i].First = clamp(uint16(a1.Data.([]Pair)[i].First.(uint8)) + 
+          uint16(a2.Data.([]Pair)[i].First.(uint8)), uint8(8)).(uint8)
+          a3.Data.([]Pair)[i].Second = clamp(uint16(a1.Data.([]Pair)[i].Second.(uint8)) + 
+          uint16(a2.Data.([]Pair)[i].Second.(uint8)), uint8(8)).(uint8)
         }
         break
       case uint16:
@@ -341,24 +346,33 @@ func (a1* Audio) Norm(rms_d1 float64, rms_d2 float64) (a2* Audio, err error) {
   case []uint8:
     a2.Data = make([]uint8, a2.Size)
     for i := int64(0); i < a2.Size; i++ {
-      a2.Data.([]uint8)[i] = uint8((rms_d1 * float64(a1.Data.([]uint8)[i])) / rms_c1);
+      a2.Data.([]uint8)[i] = clamp(uint16((rms_d1 * float64(a1.Data.([]uint8)[i])) / rms_c1), uint8(8)).(uint8)
     }
     break
   case []uint16:
     a2.Data = make([]uint16, a2.Size)
-    //TODO
+    for i := int64(0); i < a2.Size; i++ {
+      a2.Data.([]uint16)[i] = clamp(uint32((rms_d1 * float64(a1.Data.([]uint16)[i])) / rms_c1), uint8(16)).(uint16)
+    }
     break
   case []Pair:
     a2.Data = make([]Pair, a2.Size)
     switch a1.Data.([]Pair)[0].First.(type) {
     case uint8:
       for i := int64(0); i < a2.Size; i++ {
-        a2.Data.([]Pair)[i].First = uint8((rms_d1 * float64(a1.Data.([]Pair)[i].First.(uint8))) / rms_c1);
-        a2.Data.([]Pair)[i].Second = uint8((rms_d2 * float64(a1.Data.([]Pair)[i].Second.(uint8))) / rms_c2);
+        a2.Data.([]Pair)[i].First = clamp(uint16((rms_d1 * float64(a1.Data.([]Pair)[i].First.(uint8))) / rms_c1), 
+        uint8(8)).(uint8)
+        a2.Data.([]Pair)[i].Second = clamp(uint16((rms_d2 * float64(a1.Data.([]Pair)[i].Second.(uint8))) / rms_c2), 
+        uint8(8)).(uint8)
       }
       break
     case uint16:
-      //TODO
+      for i := int64(0); i < a2.Size; i++ {
+        a2.Data.([]Pair)[i].First = clamp(uint32((rms_d1 * float64(a1.Data.([]Pair)[i].First.(uint16))) / rms_c1), 
+        uint8(16)).(uint16)
+        a2.Data.([]Pair)[i].Second = clamp(uint32((rms_d2 * float64(a1.Data.([]Pair)[i].Second.(uint16))) / rms_c2), 
+        uint8(16)).(uint16)
+      }
       break
     }
   }
