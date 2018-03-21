@@ -340,7 +340,7 @@ func (a1* Audio) Norm(rms_d1 float64, rms_d2 float64) (a2* Audio, err error) {
   switch a1.Data.(type) {
   case []uint8:
     a2.Data = make([]uint8, a2.Size)
-    for i := int64(0); i < a1.Size; i++ {
+    for i := int64(0); i < a2.Size; i++ {
       a2.Data.([]uint8)[i] = uint8((rms_d1 * float64(a1.Data.([]uint8)[i])) / rms_c1);
     }
     break
@@ -350,11 +350,11 @@ func (a1* Audio) Norm(rms_d1 float64, rms_d2 float64) (a2* Audio, err error) {
     break
   case []Pair:
     a2.Data = make([]Pair, a2.Size)
-    switch a2.Data.([]Pair)[0].First.(type) {
+    switch a1.Data.([]Pair)[0].First.(type) {
     case uint8:
-      for i := int64(0); i < a1.Size; i++ {
-        a2.Data.([]Pair)[i].First = uint8((rms_d1 * float64(a1.Data.([]Pair)[1].First.(uint8))) / rms_c1);
-        a2.Data.([]Pair)[i].Second = uint8((rms_d2 * float64(a1.Data.([]Pair)[1].Second.(uint8))) / rms_c2);
+      for i := int64(0); i < a2.Size; i++ {
+        a2.Data.([]Pair)[i].First = uint8((rms_d1 * float64(a1.Data.([]Pair)[i].First.(uint8))) / rms_c1);
+        a2.Data.([]Pair)[i].Second = uint8((rms_d2 * float64(a1.Data.([]Pair)[i].Second.(uint8))) / rms_c2);
       }
       break
     case uint16:

@@ -398,4 +398,34 @@ func TestAudio(t *testing.T) {
 			t.Errorf("Audio8M norm was incorrect, got: %d want: %d.", *out, norm_8M)
 		}
 	})
+
+	a_8S_2 := Audio {
+		Data: []Pair{ Pair{uint8(0), uint8(0)}, Pair{uint8(0), uint8(0)}, 
+									Pair{uint8(0), uint8(0)}, Pair{uint8(1), uint8(1)}},
+		Channel: 2,
+		Size: 4,
+		SamplingRate: 1,
+		NumberOfSamples: 4,
+		Length: 4,
+	}
+
+	norm_8S := Audio {
+		Data: []Pair{ Pair{uint8(0), uint8(0)}, Pair{uint8(0), uint8(0)}, 
+									Pair{uint8(0), uint8(0)}, Pair{uint8(2), uint8(2)}},
+		Channel: 2,
+		Size: 4,
+		SamplingRate: 1,
+		NumberOfSamples: 4,
+		Length: 4,
+	}
+
+	t.Run("Audio8S norm", func(t *testing.T) {
+		out, err := a_8S_2.Norm(1.0, 1.0)
+		if err != nil {
+			t.Errorf("Audio8S norm should Pass.")
+		}
+		if !reflect.DeepEqual(*out, norm_8S) {
+			t.Errorf("Audio8S norm was incorrect, got: %d want: %d.", *out, norm_8S)
+		}
+	})
 }
