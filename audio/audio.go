@@ -143,14 +143,6 @@ func (a1* Audio) Plus(a2* Audio) (a3 *Audio, err error) {
 	return
 }
 
-func (a1* Audio) Times(a2* Audio) (a3 *Audio, err error) {
-  if err := Compare(a1, a2); err != nil {
-    return nil, err
-  }
-  return
-}
-
-
 func (a1* Audio) Concat(a2* Audio) (a3 *Audio, err error) {
   if err := Compare(a1, a2); err != nil {
     return nil, err
