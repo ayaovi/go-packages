@@ -166,7 +166,15 @@ func (a1* Audio) Concat(a2* Audio) (a3 *Audio, err error) {
     }
     break
   case []uint16:
-    //TODO
+    a3.Data = make([]uint16, a1.Size + a2.Size)
+    // copy content of a1 into a3.
+    for i := int64(0); i < a1.Size; i++ {
+      a3.Data.([]uint16)[i] = a1.Data.([]uint16)[i]
+    }
+    // then append content od a2 to a3.
+    for i := a1.Size; i < a1.Size + a2.Size; i++ {
+      a3.Data.([]uint16)[i] = a1.Data.([]uint16)[i - a1.Size]
+    }
     break
   case []Pair:
     a3.Data = make([]Pair, a1.Size + a2.Size)
@@ -202,7 +210,10 @@ func (a1* Audio) Reverse() (a2 *Audio, err error) {
     }
     break
   case []uint16:
-    //TODO
+    a2.Data = make([]uint16, a1.Size)
+    for i := int64(0); i < a1.Size; i++ {
+      a2.Data.([]uint16)[i] = a1.Data.([]uint16)[a1.Size - i - 1]
+    }
     break
   case []Pair:
     a2.Data = make([]Pair, a1.Size)
@@ -231,13 +242,16 @@ func (a1* Audio) Cut(start int64, end int64) (a2 *Audio, err error) {
 
   switch a1.Data.(type) {
   case []uint8:
-    a2.Data = make([]byte, end - start + 1)
+    a2.Data = make([]uint8, end - start + 1)
     for i := start; i < end + 1; i++ {
       a2.Data.([]uint8)[i - start] = a1.Data.([]uint8)[i]
     }
     break
   case []uint16:
-    //TODO
+    a2.Data = make([]uint16, end - start + 1)
+    for i := start; i < end + 1; i++ {
+      a2.Data.([]uint16)[i - start] = a1.Data.([]uint16)[i]
+    }
     break
   case []Pair:
     a2.Data = make([]Pair, end - start + 1)
@@ -267,7 +281,10 @@ func (a1* Audio) Amplify(vol Volume) (a2 *Audio, err error) {
     }
     break
   case []uint16:
-    //TODO
+    a2.Data = make([]uint16, a1.Size)
+    for i := int64(0); i < a1.Size; i++ {
+      a2.Data.([]uint16)[i] = uint16(vol.C1 * float32(a1.Data.([]uint16)[i]))
+    }
     break
   case []Pair:
     a2.Data = make([]Pair, a1.Size)
