@@ -111,7 +111,11 @@ func (a1* Audio) Plus(a2* Audio) (a3 *Audio, err error) {
     }
     break
   case []uint16:
-    //TODO
+    a3.Data = make([]uint16, a1.Size)
+    for i := int64(0); i < a1.Size; i++ {
+      a3.Data.([]uint16)[i] = clamp(uint32(a1.Data.([]uint16)[i]) + uint32(a2.Data.([]uint16)[i]), 
+      uint8(16)).(uint16)
+    }
     break
   case []Pair:
     a3.Data = make([]Pair, a1.Size)
@@ -125,6 +129,12 @@ func (a1* Audio) Plus(a2* Audio) (a3 *Audio, err error) {
         }
         break
       case uint16:
+        for i := int64(0); i < a1.Size; i++ {
+          a3.Data.([]Pair)[i].First = clamp(uint32(a1.Data.([]Pair)[i].First.(uint16)) + 
+          uint32(a2.Data.([]Pair)[i].First.(uint16)), uint8(16)).(uint16)
+          a3.Data.([]Pair)[i].Second = clamp(uint32(a1.Data.([]Pair)[i].Second.(uint16)) + 
+          uint32(a2.Data.([]Pair)[i].Second.(uint16)), uint8(16)).(uint16)
+        }
         break
     }
     break

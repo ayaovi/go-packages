@@ -3,9 +3,11 @@ package audio
 import (
 	"testing"
 	"reflect"
+	"fmt"
 )
 
-func TestAudio(t *testing.T) {
+func TestAudioValidation(t *testing.T) {
+	fmt.Println("**** Running Audio Validation Tests ****")
 	a_8M_0 := Audio {
 		Data: []uint8{1, 2, 3, 4},
 		Channel: 1,
