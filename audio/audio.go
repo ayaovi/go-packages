@@ -105,14 +105,14 @@ func (a1* Audio) Plus(a2* Audio) (a3 *Audio, err error) {
   switch a1.Data.(type) {
   case []uint8:
     a3.Data = make([]uint8, a1.Size)
-    for i := int64(0); i < a1.Size; i++ {
+    for i := int64(0); i < a1.NumberOfSamples; i++ {
       a3.Data.([]uint8)[i] = clamp(uint16(a1.Data.([]uint8)[i]) + uint16(a2.Data.([]uint8)[i]), 
       uint8(8)).(uint8)
     }
     break
   case []uint16:
     a3.Data = make([]uint16, a1.Size)
-    for i := int64(0); i < a1.Size; i++ {
+    for i := int64(0); i < a1.NumberOfSamples; i++ {
       a3.Data.([]uint16)[i] = clamp(uint32(a1.Data.([]uint16)[i]) + uint32(a2.Data.([]uint16)[i]), 
       uint8(16)).(uint16)
     }
@@ -121,7 +121,7 @@ func (a1* Audio) Plus(a2* Audio) (a3 *Audio, err error) {
     a3.Data = make([]Pair, a1.Size)
     switch a1.Data.([]Pair)[0].First.(type){
       case uint8:
-        for i := int64(0); i < a1.Size; i++ {
+        for i := int64(0); i < a1.NumberOfSamples; i++ {
           a3.Data.([]Pair)[i].First = clamp(uint16(a1.Data.([]Pair)[i].First.(uint8)) + 
           uint16(a2.Data.([]Pair)[i].First.(uint8)), uint8(8)).(uint8)
           a3.Data.([]Pair)[i].Second = clamp(uint16(a1.Data.([]Pair)[i].Second.(uint8)) + 
@@ -129,7 +129,7 @@ func (a1* Audio) Plus(a2* Audio) (a3 *Audio, err error) {
         }
         break
       case uint16:
-        for i := int64(0); i < a1.Size; i++ {
+        for i := int64(0); i < a1.NumberOfSamples; i++ {
           a3.Data.([]Pair)[i].First = clamp(uint32(a1.Data.([]Pair)[i].First.(uint16)) + 
           uint32(a2.Data.([]Pair)[i].First.(uint16)), uint8(16)).(uint16)
           a3.Data.([]Pair)[i].Second = clamp(uint32(a1.Data.([]Pair)[i].Second.(uint16)) + 
@@ -143,52 +143,52 @@ func (a1* Audio) Plus(a2* Audio) (a3 *Audio, err error) {
 	return
 }
 
-func (a1* Audio) Concat(a2* Audio) (a3 *Audio, err error) {
-  if err := Compare(a1, a2); err != nil {
+func (input1* Audio) Concat(input2* Audio) (output *Audio, err error) {
+  if err := Compare(input1, input2); err != nil {
     return nil, err
   }
 
-  a3 = &Audio {
-    Channel: a1.Channel,
-    Size: a1.Size + a2.Size,
-    SamplingRate: a1.SamplingRate,
-    NumberOfSamples: a1.NumberOfSamples + a2.NumberOfSamples,
-    Length: a1.Length + a2.Length,
+  output = &Audio {
+    Channel: input1.Channel,
+    Size: input1.Size + input2.Size,
+    SamplingRate: input1.SamplingRate,
+    NumberOfSamples: input1.NumberOfSamples + input2.NumberOfSamples,
+    Length: input1.Length + input2.Length,
   }
-  switch a1.Data.(type) {
+  switch input1.Data.(type) {
   case []uint8:
-    a3.Data = make([]uint8, a1.Size + a2.Size)
-    // copy content of a1 into a3.
-    for i := int64(0); i < a1.Size; i++ {
-      a3.Data.([]uint8)[i] = a1.Data.([]uint8)[i]
+    output.Data = make([]uint8, input1.Size + input2.Size)
+    // copy content of input1 into output.
+    for i := int64(0); i < input1.NumberOfSamples; i++ {
+      output.Data.([]uint8)[i] = input1.Data.([]uint8)[i]
     }
-    // then append content od a2 to a3.
-    for i := a1.Size; i < a1.Size + a2.Size; i++ {
-      a3.Data.([]uint8)[i] = a1.Data.([]uint8)[i - a1.Size]
+    // then append content of input2 to output.
+    for i := input1.NumberOfSamples; i < output.NumberOfSamples; i++ {
+      output.Data.([]uint8)[i] = input2.Data.([]uint8)[i - input1.NumberOfSamples]
     }
     break
   case []uint16:
-    a3.Data = make([]uint16, a1.Size + a2.Size)
-    // copy content of a1 into a3.
-    for i := int64(0); i < a1.Size; i++ {
-      a3.Data.([]uint16)[i] = a1.Data.([]uint16)[i]
+    output.Data = make([]uint16, input1.Size + input2.Size)
+    // copy content of input1 into output.
+    for i := int64(0); i < input1.NumberOfSamples; i++ {
+      output.Data.([]uint16)[i] = input1.Data.([]uint16)[i]
     }
-    // then append content od a2 to a3.
-    for i := a1.Size; i < a1.Size + a2.Size; i++ {
-      a3.Data.([]uint16)[i] = a1.Data.([]uint16)[i - a1.Size]
+    // then append content of input2 to output.
+    for i := input1.NumberOfSamples; i < output.NumberOfSamples; i++ {
+      output.Data.([]uint16)[i] = input2.Data.([]uint16)[i - input1.NumberOfSamples]
     }
     break
   case []Pair:
-    a3.Data = make([]Pair, a1.Size + a2.Size)
-    // copy content of a1 into a3.
-    for i := int64(0); i < a1.Size; i++ {
-      a3.Data.([]Pair)[i].First = a1.Data.([]Pair)[i].First
-      a3.Data.([]Pair)[i].Second = a1.Data.([]Pair)[i].Second
+    output.Data = make([]Pair, input1.Size + input2.Size)
+    // copy content of input1 into output.
+    for i := int64(0); i < input1.Size; i++ {
+      output.Data.([]Pair)[i].First = input1.Data.([]Pair)[i].First
+      output.Data.([]Pair)[i].Second = input1.Data.([]Pair)[i].Second
     }
-    // then append content od a2 to a3.
-    for i := a1.Size; i < a1.Size + a2.Size; i++ {
-      a3.Data.([]Pair)[i].First = a1.Data.([]Pair)[i - a1.Size].First
-      a3.Data.([]Pair)[i].Second = a1.Data.([]Pair)[i - a1.Size].Second
+    // then append content of input2 to output.
+    for i := input1.NumberOfSamples; i < output.NumberOfSamples; i++ {
+      output.Data.([]Pair)[i].First = input2.Data.([]Pair)[i - input1.NumberOfSamples].First
+      output.Data.([]Pair)[i].Second = input2.Data.([]Pair)[i - input1.NumberOfSamples].Second
     }
     break
   }
