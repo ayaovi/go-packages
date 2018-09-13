@@ -309,39 +309,39 @@ func (input* Audio) Amplify(vol Volume) (output* Audio, err error) {
   return
 }
 
-func (a* Audio) Rms() (value1 float64, value2 float64 , err error) {
+func (input* Audio) Rms() (value1 float64, value2 float64 , err error) {
   sum1 := float64(0)
   sum2 := float64(0)
-  switch a.Data.(type) {
+  switch input.Data.(type) {
   case []uint8:
-    for _, v := range(a.Data.([]uint8)) {
+    for _, v := range(input.Data.([]uint8)) {
       sum1 += float64(v * v)
     }
-    value1 = math.Sqrt(sum1 / float64(a.Size))
+    value1 = math.Sqrt(sum1 / float64(input.NumberOfSamples))
     break
   case []uint16:
-    for _, v := range(a.Data.([]uint16)) {
+    for _, v := range(input.Data.([]uint16)) {
       sum1 += float64(v * v)
     }
-    value1 = math.Sqrt(sum1 / float64(a.Size))
+    value1 = math.Sqrt(sum1 / float64(input.NumberOfSamples))
     break
   case []Pair:
-    switch a.Data.([]Pair)[0].First.(type) {
+    switch input.Data.([]Pair)[0].First.(type) {
     case uint8:
-      for _, v := range(a.Data.([]Pair)) {
+      for _, v := range(input.Data.([]Pair)) {
         sum1 += float64(v.First.(uint8) * v.First.(uint8))
         sum2 += float64(v.Second.(uint8) * v.Second.(uint8))
       }
       break
     case uint16:
-      for _, v := range(a.Data.([]Pair)) {
+      for _, v := range(input.Data.([]Pair)) {
         sum1 += float64(v.First.(uint16) * v.First.(uint16))
         sum2 += float64(v.Second.(uint16) * v.Second.(uint16))
       }
       break
     }
-    value1 = math.Sqrt(sum1 / float64(a.Size))
-    value2 = math.Sqrt(sum2 / float64(a.Size))
+    value1 = math.Sqrt(sum1 / float64(input.NumberOfSamples))
+    value2 = math.Sqrt(sum2 / float64(input.NumberOfSamples))
     break
   }
   
