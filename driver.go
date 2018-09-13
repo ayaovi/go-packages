@@ -7,48 +7,51 @@ import (
 	"os"
 )
 
-//func load()
+func check(e error) {
+	if e != nil { panic(e) }
+}
 
-func main() {
-	f, err := os.Open("/home/ayaovi/Downloads/input_files/beez18sec_44100_signed_8bit_mono.raw")
-	if err != nil {
-		panic(err)
-	}
+func loadAudio(path string) (output* audio.Audio) {
+	f, err := os.Open(path)
+	check(err)
+
 	fi, err := f.Stat()
-	if err != nil {
-		// Could not obtain stat, handle error
-		panic(err)
-	}
+	check(err)
 	
-	a := audio.Audio {
+	output = &audio.Audio {
 		Channel: 1,
 		SamplingRate: 44100,
 		Size: fi.Size(),
 		Data: make([]byte, fi.Size()),
 	}
-	_, err1 := f.Read(a.Data)
 	
-	if err1 != nil {
-		// could not read file content.
-		panic(err1)
-	}
+	_, err = f.Read(output.Data.([]byte))
+	check(err)
 	defer f.Close()
-	
-	a.NumberOfSamples = a.Size / (int64(unsafe.Sizeof(a.Data[0])) * int64(a.Channel))
-	a.Length = a.NumberOfSamples / int64(a.SamplingRate)
+	return
+}
 
-	fmt.Printf("size of data is %d bytes.\n", a.Size)
-	fmt.Printf("samplingRate is %d bytes long.\n", a.SamplingRate)
-	fmt.Printf("numberOfSamples is %d bytes long.\n", a.NumberOfSamples)
-	fmt.Printf("length is %d second(s).\n", a.Length)
-  
-  //for i := 0; i < 10; i++ {
-    //fmt.Printf("index %d: %d\n", i ,a.Data[i])
-  //}
-  
-  // a.Plus(&a)
-  
-  //for i := 0; i < 10; i++ {
-    //fmt.Printf("index %d: %d\n", i ,out.Data[i])
-  //}
+func saveAudio(path string, file* audio.Audio) () {
+	f, err := os.Create(path)
+	check(err)
+	
+	_, err = f.Write(file.Data.([]byte))
+	check(err)
+}
+
+func main() {
+	input := loadAudio("/home/ayaovi/Downloads/input_files/countdown40sec_44100_signed_8bit_mono.raw")
+	
+	input.NumberOfSamples = input.Size / (int64(unsafe.Sizeof(input.Data.([]byte)[0])) * int64(input.Channel))
+	input.Length = input.NumberOfSamples / int64(input.SamplingRate)
+
+	fmt.Printf("size of data is %d bytes.\n", input.Size)
+	fmt.Printf("samplingRate is %d bytes long.\n", input.SamplingRate)
+	fmt.Printf("numberOfSamples is %d bytes long.\n", input.NumberOfSamples)
+	fmt.Printf("length is %d second(s).\n", input.Length)
+
+	output, err := input.Cut(0, 617400)
+	check(err)
+
+	saveAudio("/home/ayaovi/Downloads/input_files/countdown14sec_44100_signed_8bit_mono.raw", output)
 }
