@@ -462,3 +462,43 @@ func (input* Audio) FadeIn(second float64) (output* Audio, err error) {
   
   return
 }
+
+func (input* Audio) FadeOut(second float64) (output* Audio, err error) {
+  output = &Audio {
+    Channel: input.Channel,
+    Size: input.Size,
+    SamplingRate: input.SamplingRate,
+    NumberOfSamples: input.NumberOfSamples,
+    Length: input.Length,
+  }
+  rampLength := int64(second * float64(input.SamplingRate))
+
+  //check that the input audio is at leat as long as the fade-in second.
+  if input.NumberOfSamples < rampLength {
+    err = &AudioError { Message: fmt.Sprintf("input audio is too short") }
+    return
+  }
+
+  switch input.Data.(type) {
+  case []uint8:
+    output.Data = make([]uint8, output.Size)
+    for i := int64(0); i < rampLength; i++ {
+      output.Data.([]uint8)[i] = uint8(math.Round((float64(1) - float64(i) / float64(rampLength)) * float64(input.Data.([]uint8)[i])))
+    }
+    for i := rampLength; i < output.NumberOfSamples; i++ {
+      output.Data.([]uint8)[i] = input.Data.([]uint8)[i]
+    }
+    break
+  case []uint16:
+    output.Data = make([]uint16, output.Size)
+    for i := int64(0); i < rampLength; i++ {
+      output.Data.([]uint16)[i] = uint16(math.Round((float64(1) - float64(i) / float64(rampLength)) * float64(input.Data.([]uint16)[i])))
+    }
+    for i := rampLength; i < output.NumberOfSamples; i++ {
+      output.Data.([]uint16)[i] = input.Data.([]uint16)[i]
+    }
+    break
+  }
+
+  return
+}
