@@ -8,9 +8,9 @@ import (
 type Audio struct {
 	Data interface{}
 	Channel uint
-	Size int64
-	SamplingRate uint
-	NumberOfSamples int64
+	Size int64  /* file size in bytes. */
+	SamplingRate uint /* in Hz. */
+	NumberOfSamples int64 /* size / (sample_size * channel) */
 	Length int64
 }
 
@@ -394,6 +394,39 @@ func (a1* Audio) Norm(rms_d1 float64, rms_d2 float64) (a2* Audio, err error) {
       }
       break
     }
+  }
+  
+  return
+}
+
+func (input* Audio) FadeIn(second float64) (output* Audio, err error) {
+  output = &Audio {
+    Channel: input.Channel,
+    Size: input.Size,
+    SamplingRate: input.SamplingRate,
+    NumberOfSamples: input.NumberOfSamples,
+    Length: input.Length,
+  }
+  rampLength := int64(second * float64(input.SamplingRate))
+
+  //check that the input audio is at leat as long as the fade-in second.
+  if input.NumberOfSamples < rampLength {
+    err = &AudioError { Message: fmt.Sprintf("input audio is too short") }
+    return
+  }
+
+  switch input.Data.(type) {
+  case []uint8:
+    output.Data = make([]uint8, output.Size)
+    for i := int64(0); i < rampLength; i++ {
+      //clamp(uint16((rms_d1 * float64(a1.Data.([]uint8)[i])) / rms_c1), uint8(8)).(uint8)
+      output.Data.([]uint8)[i] = uint8(float64(i) / float64(rampLength) * float64(input.Data.([]uint8)[i]))
+    }
+    for i := rampLength; i < output.NumberOfSamples; i++ {
+      //clamp(uint16((rms_d1 * float64(a1.Data.([]uint8)[i])) / rms_c1), uint8(8)).(uint8)
+      output.Data.([]uint8)[i] = input.Data.([]uint8)[i]
+    }
+    break
   }
   
   return
