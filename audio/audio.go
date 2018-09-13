@@ -419,12 +419,19 @@ func (input* Audio) FadeIn(second float64) (output* Audio, err error) {
   case []uint8:
     output.Data = make([]uint8, output.Size)
     for i := int64(0); i < rampLength; i++ {
-      //clamp(uint16((rms_d1 * float64(a1.Data.([]uint8)[i])) / rms_c1), uint8(8)).(uint8)
       output.Data.([]uint8)[i] = uint8(float64(i) / float64(rampLength) * float64(input.Data.([]uint8)[i]))
     }
     for i := rampLength; i < output.NumberOfSamples; i++ {
-      //clamp(uint16((rms_d1 * float64(a1.Data.([]uint8)[i])) / rms_c1), uint8(8)).(uint8)
       output.Data.([]uint8)[i] = input.Data.([]uint8)[i]
+    }
+    break
+  case []uint16:
+    output.Data = make([]uint16, output.Size)
+    for i := int64(0); i < rampLength; i++ {
+      output.Data.([]uint16)[i] = uint16(float64(i) / float64(rampLength) * float64(input.Data.([]uint16)[i]))
+    }
+    for i := rampLength; i < output.NumberOfSamples; i++ {
+      output.Data.([]uint16)[i] = input.Data.([]uint16)[i]
     }
     break
   }
