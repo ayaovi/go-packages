@@ -498,6 +498,31 @@ func (input* Audio) FadeOut(second float64) (output* Audio, err error) {
       output.Data.([]uint16)[i] = input.Data.([]uint16)[i]
     }
     break
+
+  case []Pair:
+    output.Data = make([]Pair, output.Size)
+    switch input.Data.([]Pair)[0].First.(type) {
+    case uint8:
+      for i := int64(0); i < rampLength; i++ {
+        output.Data.([]Pair)[i].First = uint8(math.Round((float64(1) - float64(i) / float64(rampLength)) * float64(input.Data.([]Pair)[i].First.(uint8))))
+        output.Data.([]Pair)[i].Second = uint8(math.Round((float64(1) - float64(i) / float64(rampLength)) * float64(input.Data.([]Pair)[i].Second.(uint8))))
+      }
+      for i := rampLength; i < output.NumberOfSamples; i++ {
+        output.Data.([]Pair)[i].First = input.Data.([]Pair)[i].First
+        output.Data.([]Pair)[i].Second = input.Data.([]Pair)[i].Second
+      }
+      break
+    case uint16:
+      for i := int64(0); i < rampLength; i++ {
+        output.Data.([]Pair)[i].First = uint16(math.Round((float64(1) - float64(i) / float64(rampLength)) * float64(input.Data.([]Pair)[i].First.(uint16))))
+        output.Data.([]Pair)[i].Second = uint16(math.Round((float64(1) - float64(i) / float64(rampLength)) * float64(input.Data.([]Pair)[i].Second.(uint16))))
+      }
+      for i := rampLength; i < output.NumberOfSamples; i++ {
+        output.Data.([]Pair)[i].First = input.Data.([]Pair)[i].First
+        output.Data.([]Pair)[i].Second = input.Data.([]Pair)[i].Second
+      }
+      break
+    }
   }
 
   return
