@@ -102,4 +102,42 @@ func TestAudioFadeIn(t *testing.T) {
 			t.Errorf("Audio16M fade-in was incorrect, got: %d, want: %d.", *output, fadeIn_16M)
 		}
 	})
+
+	audio_16S := Audio {
+		Data: []Pair { Pair{uint16(1), uint16(1)}, Pair{uint16(10), uint16(10)}, 
+									 Pair{uint16(10), uint16(10)}, Pair{uint16(10), uint16(10)},
+									 Pair{uint16(10), uint16(10)}, Pair{uint16(10), uint16(10)},
+									 Pair{uint16(10), uint16(10)}, Pair{uint16(10), uint16(10)},
+									 Pair{uint16(10), uint16(10)}, Pair{uint16(10), uint16(10)},
+									 Pair{uint16(100), uint16(100)} },
+		Channel: 2,
+		Size: 11,
+		SamplingRate: 1,
+		NumberOfSamples: 11,
+		Length: 11,
+	}
+
+	fadeIn_16S := Audio {
+		Data: []Pair { Pair{uint16(0), uint16(0)}, Pair{uint16(1), uint16(1)}, 
+									 Pair{uint16(2), uint16(2)}, Pair{uint16(3), uint16(3)},
+									 Pair{uint16(4), uint16(4)}, Pair{uint16(5), uint16(5)},
+									 Pair{uint16(6), uint16(6)}, Pair{uint16(7), uint16(7)},
+									 Pair{uint16(8), uint16(8)}, Pair{uint16(9), uint16(9)},
+									 Pair{uint16(100), uint16(100)} },
+		Channel: 2,
+		Size: 11,
+		SamplingRate: 1,
+		NumberOfSamples: 11,
+		Length: 11,
+	}
+
+	t.Run("Audio16S fade-in", func(t *testing.T) {
+		output, err := audio_16S.FadeIn(10)
+		if err != nil {
+			t.Errorf("Audio16S fade-in should Pass.")
+		}
+		if !reflect.DeepEqual(fadeIn_16S, *output) {
+			t.Errorf("Audio16S fade-in was incorrect, got: %d, want: %d.", *output, fadeIn_16S)
+		}
+	})
 }

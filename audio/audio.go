@@ -447,6 +447,16 @@ func (input* Audio) FadeIn(second float64) (output* Audio, err error) {
         output.Data.([]Pair)[i].Second = input.Data.([]Pair)[i].Second
       }
       break
+    case uint16:
+      for i := int64(0); i < rampLength; i++ {
+        output.Data.([]Pair)[i].First = uint16(float64(i) / float64(rampLength) * float64(input.Data.([]Pair)[i].First.(uint16)))
+        output.Data.([]Pair)[i].Second = uint16(float64(i) / float64(rampLength) * float64(input.Data.([]Pair)[i].Second.(uint16)))
+      }
+      for i := rampLength; i < output.NumberOfSamples; i++ {
+        output.Data.([]Pair)[i].First = input.Data.([]Pair)[i].First
+        output.Data.([]Pair)[i].Second = input.Data.([]Pair)[i].Second
+      }
+      break
     }
   }
   
