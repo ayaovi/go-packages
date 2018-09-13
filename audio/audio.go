@@ -348,48 +348,50 @@ func (input* Audio) Rms() (value1 float64, value2 float64 , err error) {
   return
 }
 
-func (a1* Audio) Norm(rms_d1 float64, rms_d2 float64) (a2* Audio, err error) {
+func (input* Audio) Norm(rms_d1 float64, rms_d2 float64) (output* Audio, err error) {
   //validate
-  rms_c1, rms_c2, err := a1.Rms()
+  rms_c1, rms_c2, err := input.Rms()
+  
   if err != nil {
     return
   }
-  a2 = &Audio {
-    Channel: a1.Channel,
-    Size: a1.Size,
-    SamplingRate: a1.SamplingRate,
-    NumberOfSamples: a1.NumberOfSamples,
-    Length: a1.Length,
+  
+  output = &Audio {
+    Channel: input.Channel,
+    Size: input.Size,
+    SamplingRate: input.SamplingRate,
+    NumberOfSamples: input.NumberOfSamples,
+    Length: input.Length,
   }
-  switch a1.Data.(type) {
+  switch input.Data.(type) {
   case []uint8:
-    a2.Data = make([]uint8, a2.Size)
-    for i := int64(0); i < a2.Size; i++ {
-      a2.Data.([]uint8)[i] = clamp(uint16((rms_d1 * float64(a1.Data.([]uint8)[i])) / rms_c1), uint8(8)).(uint8)
+    output.Data = make([]uint8, input.Size)
+    for i := int64(0); i < input.NumberOfSamples; i++ {
+      output.Data.([]uint8)[i] = clamp(uint16((rms_d1 * float64(input.Data.([]uint8)[i])) / rms_c1), uint8(8)).(uint8)
     }
     break
   case []uint16:
-    a2.Data = make([]uint16, a2.Size)
-    for i := int64(0); i < a2.Size; i++ {
-      a2.Data.([]uint16)[i] = clamp(uint32((rms_d1 * float64(a1.Data.([]uint16)[i])) / rms_c1), uint8(16)).(uint16)
+    output.Data = make([]uint16, input.Size)
+    for i := int64(0); i < input.NumberOfSamples; i++ {
+      output.Data.([]uint16)[i] = clamp(uint32((rms_d1 * float64(input.Data.([]uint16)[i])) / rms_c1), uint8(16)).(uint16)
     }
     break
   case []Pair:
-    a2.Data = make([]Pair, a2.Size)
-    switch a1.Data.([]Pair)[0].First.(type) {
+    output.Data = make([]Pair, input.Size)
+    switch input.Data.([]Pair)[0].First.(type) {
     case uint8:
-      for i := int64(0); i < a2.Size; i++ {
-        a2.Data.([]Pair)[i].First = clamp(uint16((rms_d1 * float64(a1.Data.([]Pair)[i].First.(uint8))) / rms_c1), 
+      for i := int64(0); i < input.NumberOfSamples; i++ {
+        output.Data.([]Pair)[i].First = clamp(uint16((rms_d1 * float64(input.Data.([]Pair)[i].First.(uint8))) / rms_c1), 
         uint8(8)).(uint8)
-        a2.Data.([]Pair)[i].Second = clamp(uint16((rms_d2 * float64(a1.Data.([]Pair)[i].Second.(uint8))) / rms_c2), 
+        output.Data.([]Pair)[i].Second = clamp(uint16((rms_d2 * float64(input.Data.([]Pair)[i].Second.(uint8))) / rms_c2), 
         uint8(8)).(uint8)
       }
       break
     case uint16:
-      for i := int64(0); i < a2.Size; i++ {
-        a2.Data.([]Pair)[i].First = clamp(uint32((rms_d1 * float64(a1.Data.([]Pair)[i].First.(uint16))) / rms_c1), 
+      for i := int64(0); i < input.NumberOfSamples; i++ {
+        output.Data.([]Pair)[i].First = clamp(uint32((rms_d1 * float64(input.Data.([]Pair)[i].First.(uint16))) / rms_c1), 
         uint8(16)).(uint16)
-        a2.Data.([]Pair)[i].Second = clamp(uint32((rms_d2 * float64(a1.Data.([]Pair)[i].Second.(uint16))) / rms_c2), 
+        output.Data.([]Pair)[i].Second = clamp(uint32((rms_d2 * float64(input.Data.([]Pair)[i].Second.(uint16))) / rms_c2), 
         uint8(16)).(uint16)
       }
       break
