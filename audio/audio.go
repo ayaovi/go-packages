@@ -196,32 +196,32 @@ func (input1* Audio) Concat(input2* Audio) (output *Audio, err error) {
   return
 }
 
-func (a1* Audio) Reverse() (a2 *Audio, err error) {
-  a2 = &Audio {
-    Channel: a1.Channel,
-    Size: a1.Size,
-    SamplingRate: a1.SamplingRate,
-    NumberOfSamples: a1.NumberOfSamples,
-    Length: a1.Length,
+func (input* Audio) Reverse() (output *Audio, err error) {
+  output = &Audio {
+    Channel: input.Channel,
+    Size: input.Size,
+    SamplingRate: input.SamplingRate,
+    NumberOfSamples: input.NumberOfSamples,
+    Length: input.Length,
   }
-  switch a1.Data.(type) {
+  switch input.Data.(type) {
   case []uint8:
-    a2.Data = make([]uint8, a1.Size)
-    for i := int64(0); i < a1.Size; i++ {
-      a2.Data.([]uint8)[i] = a1.Data.([]uint8)[a1.Size - i - 1]
+    output.Data = make([]uint8, input.Size)
+    for i := int64(0); i < input.NumberOfSamples; i++ {
+      output.Data.([]uint8)[i] = input.Data.([]uint8)[input.NumberOfSamples - i - 1]
     }
     break
   case []uint16:
-    a2.Data = make([]uint16, a1.Size)
-    for i := int64(0); i < a1.Size; i++ {
-      a2.Data.([]uint16)[i] = a1.Data.([]uint16)[a1.Size - i - 1]
+    output.Data = make([]uint16, input.Size)
+    for i := int64(0); i < input.NumberOfSamples; i++ {
+      output.Data.([]uint16)[i] = input.Data.([]uint16)[input.NumberOfSamples - i - 1]
     }
     break
   case []Pair:
-    a2.Data = make([]Pair, a1.Size)
-    for i := int64(0); i < a1.Size; i++ {
-      a2.Data.([]Pair)[i].First = a1.Data.([]Pair)[a1.Size - i - 1].First
-      a2.Data.([]Pair)[i].Second = a1.Data.([]Pair)[a1.Size - i - 1].Second
+    output.Data = make([]Pair, input.Size)
+    for i := int64(0); i < input.NumberOfSamples; i++ {
+      output.Data.([]Pair)[i].First = input.Data.([]Pair)[input.NumberOfSamples - i - 1].First
+      output.Data.([]Pair)[i].Second = input.Data.([]Pair)[input.NumberOfSamples - i - 1].Second
     }
     break
   }
