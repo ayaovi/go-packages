@@ -229,37 +229,37 @@ func (input* Audio) Reverse() (output *Audio, err error) {
   return
 }
 
-func (a1* Audio) Cut(start int64, end int64) (a2 *Audio, err error) {
-  if end >= a1.NumberOfSamples {
+func (input* Audio) Cut(start int64, end int64) (output* Audio, err error) {
+  if end >= input.NumberOfSamples {
     return nil, &AudioError { Message: fmt.Sprintf("invaild audio range %d - %d\n", start, end) }
   }
 
-  a2 = &Audio {
-    Channel: a1.Channel,
+  output = &Audio {
+    Channel: input.Channel,
     Size: end - start + 1,
-    SamplingRate: a1.SamplingRate,
+    SamplingRate: input.SamplingRate,
     NumberOfSamples: end - start + 1,
-    Length: (end - start + 1) / int64(a1.SamplingRate),
+    Length: (end - start + 1) / int64(input.SamplingRate),
   }
 
-  switch a1.Data.(type) {
+  switch input.Data.(type) {
   case []uint8:
-    a2.Data = make([]uint8, end - start + 1)
+    output.Data = make([]uint8, end - start + 1)
     for i := start; i < end + 1; i++ {
-      a2.Data.([]uint8)[i - start] = a1.Data.([]uint8)[i]
+      output.Data.([]uint8)[i - start] = input.Data.([]uint8)[i]
     }
     break
   case []uint16:
-    a2.Data = make([]uint16, end - start + 1)
+    output.Data = make([]uint16, end - start + 1)
     for i := start; i < end + 1; i++ {
-      a2.Data.([]uint16)[i - start] = a1.Data.([]uint16)[i]
+      output.Data.([]uint16)[i - start] = input.Data.([]uint16)[i]
     }
     break
   case []Pair:
-    a2.Data = make([]Pair, end - start + 1)
+    output.Data = make([]Pair, end - start + 1)
     for i := start; i < end + 1; i++ {
-      a2.Data.([]Pair)[i - start].First = a1.Data.([]Pair)[i].First
-      a2.Data.([]Pair)[i - start].Second = a1.Data.([]Pair)[i].Second
+      output.Data.([]Pair)[i - start].First = input.Data.([]Pair)[i].First
+      output.Data.([]Pair)[i - start].Second = input.Data.([]Pair)[i].Second
     }
     break
   }
