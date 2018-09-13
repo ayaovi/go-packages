@@ -266,41 +266,41 @@ func (input* Audio) Cut(start int64, end int64) (output* Audio, err error) {
   return
 }
 
-func (a1* Audio) Amplify(vol Volume) (a2 *Audio, err error) {
-  a2 = &Audio {
-    Channel: a1.Channel,
-    Size: a1.Size,
-    SamplingRate: a1.SamplingRate,
-    NumberOfSamples: a1.NumberOfSamples,
-    Length: a1.Length,
+func (input* Audio) Amplify(vol Volume) (output* Audio, err error) {
+  output = &Audio {
+    Channel: input.Channel,
+    Size: input.Size,
+    SamplingRate: input.SamplingRate,
+    NumberOfSamples: input.NumberOfSamples,
+    Length: input.Length,
   }
 
-  switch a1.Data.(type) {
+  switch input.Data.(type) {
   case []uint8:
-    a2.Data = make([]uint8, a1.Size)
-    for i := int64(0); i < a1.Size; i++ {
-      a2.Data.([]uint8)[i] = uint8(vol.C1 * float32(a1.Data.([]uint8)[i]))
+    output.Data = make([]uint8, input.Size)
+    for i := int64(0); i < input.NumberOfSamples; i++ {
+      output.Data.([]uint8)[i] = uint8(vol.C1 * float32(input.Data.([]uint8)[i]))
     }
     break
   case []uint16:
-    a2.Data = make([]uint16, a1.Size)
-    for i := int64(0); i < a1.Size; i++ {
-      a2.Data.([]uint16)[i] = uint16(vol.C1 * float32(a1.Data.([]uint16)[i]))
+    output.Data = make([]uint16, input.Size)
+    for i := int64(0); i < input.NumberOfSamples; i++ {
+      output.Data.([]uint16)[i] = uint16(vol.C1 * float32(input.Data.([]uint16)[i]))
     }
     break
   case []Pair:
-    a2.Data = make([]Pair, a1.Size)
-    switch a1.Data.([]Pair)[0].First.(type) {
+    output.Data = make([]Pair, input.Size)
+    switch input.Data.([]Pair)[0].First.(type) {
     case uint8:
-      for i := int64(0); i < a1.Size; i++ {
-        a2.Data.([]Pair)[i].First = uint8(vol.C1 * float32(a1.Data.([]Pair)[i].First.(uint8)))
-        a2.Data.([]Pair)[i].Second = uint8(vol.C2 * float32(a1.Data.([]Pair)[i].Second.(uint8)))
+      for i := int64(0); i < input.NumberOfSamples; i++ {
+        output.Data.([]Pair)[i].First = uint8(vol.C1 * float32(input.Data.([]Pair)[i].First.(uint8)))
+        output.Data.([]Pair)[i].Second = uint8(vol.C2 * float32(input.Data.([]Pair)[i].Second.(uint8)))
       }
       break
     case uint16:
-      for i := int64(0); i < a1.Size; i++ {
-        a2.Data.([]Pair)[i].First = uint16(vol.C1 * float32(a1.Data.([]Pair)[i].First.(uint16)))
-        a2.Data.([]Pair)[i].Second = uint16(vol.C2 * float32(a1.Data.([]Pair)[i].Second.(uint16)))
+      for i := int64(0); i < input.NumberOfSamples; i++ {
+        output.Data.([]Pair)[i].First = uint16(vol.C1 * float32(input.Data.([]Pair)[i].First.(uint16)))
+        output.Data.([]Pair)[i].Second = uint16(vol.C2 * float32(input.Data.([]Pair)[i].Second.(uint16)))
       }
     }
     break
