@@ -4,8 +4,23 @@ import (
 	"go-packages/audio"
 	"fmt"
 	"unsafe"
+	"io/ioutil"
 	"os"
 )
+
+type AudioFiles struct {
+	AudioFiles []AudioFile `json:"audioFiles"`
+}
+
+type AudioFile struct {
+	DirPath string `json:"dirPath"`
+	Name string `json:"name"`
+	Extension string `json:"ext"`
+	SamplingRate int16 `json:"samplingRate"`
+	Channel int8 `json:"channel"`
+	BitsPerSample int8 `json:"bitsPerSample"`
+	Signed bool `json:"signed"`
+}
 
 func check(e error) {
 	if e != nil { panic(e) }
@@ -39,7 +54,21 @@ func saveAudio(path string, file* audio.Audio) () {
 	check(err)
 }
 
+func loadAudioSettings(path string) (audioFiles* AudioFiles) {
+	jsonFile, err := os.Open(path)
+	check(err)
+	defer jsonFile.Close()
+
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	json.Unmarshal(byteValue, &audioFiles)
+}
+
 func main() {
+	audioFiles := loadAudioSettings("../settings.json")
+
+	fmt.Printf("thete are %d audio files.\n", len(audioFiles.AudioFiles))
+
 	input := loadAudio("/home/ayaovi/Downloads/input_files/countdown40sec_44100_signed_8bit_mono.raw")
 	
 	input.NumberOfSamples = input.Size / (int64(unsafe.Sizeof(input.Data.([]byte)[0])) * int64(input.Channel))
