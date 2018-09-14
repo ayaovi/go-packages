@@ -29,7 +29,7 @@ func TestAudioValidation(t *testing.T) {
 			Data: []uint8{1, 2, 3, 4},
 			Channel: 2,
 		}
-		expected := &AudioError { Message: "incorrect channel 2 for Audio8M" }
+		expected := &AudioError { Message: "*** audio validation ***\nincorrect channel 2 for Audio8M" }
 		err := a.Validate()
 		if !reflect.DeepEqual(err, expected) {
 			t.Errorf("Audio8M validation error was incorrect, got: %s, want: %s.", err, expected)
@@ -57,7 +57,7 @@ func TestAudioValidation(t *testing.T) {
 			Data: []uint16{1, 2, 3, 4},
 			Channel: 2,
 		}
-		expected := &AudioError { Message: "incorrect channel 2 for Audio16M" }
+		expected := &AudioError { Message: "*** audio validation ***\nincorrect channel 2 for Audio16M" }
 		err := a.Validate()
 		if !reflect.DeepEqual(err, expected) {
 			t.Errorf("Audio16M validation error was incorrect, got: %s, want: %s.", err, expected)
@@ -87,7 +87,7 @@ func TestAudioValidation(t *testing.T) {
 										 Pair{uint8(3), uint8(3)}, Pair{uint8(4), uint8(4)} },
 			Channel: 1,
 		}
-		expected := &AudioError { Message: "incorrect channel 1 for Audio8S" }
+		expected := &AudioError { Message: "*** audio validation ***\nincorrect channel 1 for Audio8S" }
 		err := a.Validate()
 		if !reflect.DeepEqual(err, expected) {
 			t.Errorf("Audio8S validation error was incorrect, got: %s, want: %s.", err, expected)
@@ -117,7 +117,7 @@ func TestAudioValidation(t *testing.T) {
 			Pair{uint16(3), uint16(3)}, Pair{uint16(4), uint16(4)} },
 			Channel: 1,
 		}
-		expected := &AudioError { Message: "incorrect channel 1 for Audio16S" }
+		expected := &AudioError { Message: "*** audio validation ***\nincorrect channel 1 for Audio16S" }
 		err := a.Validate()
 		if !reflect.DeepEqual(err, expected) {
 			t.Errorf("Audio8S validation error was incorrect, got: %s, want: %s.", err, expected)
