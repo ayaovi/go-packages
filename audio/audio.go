@@ -36,24 +36,24 @@ func (a* Audio) Validate() error {
   switch a.Data.(type) {
   case []uint8:
     if a.Channel != 1 { 
-      return &AudioError { Message: fmt.Sprintf("incorrect channel %d for Audio8M", a.Channel) } 
+      return &AudioError { Message: fmt.Sprintf("*** audio validation ***\nincorrect channel %d for Audio8M", a.Channel) } 
     }
     break
   case []uint16:
     if a.Channel != 1 { 
-      return &AudioError { Message: fmt.Sprintf("incorrect channel %d for Audio16M", a.Channel) } 
+      return &AudioError { Message: fmt.Sprintf("*** audio validation ***\nincorrect channel %d for Audio16M", a.Channel) } 
     }
     break
   case []Pair:
     switch a.Data.([]Pair)[0].First.(type){
       case uint8:
         if a.Channel != 2 { 
-          return &AudioError { Message: fmt.Sprintf("incorrect channel %d for Audio8S", a.Channel) } 
+          return &AudioError { Message: fmt.Sprintf("*** audio validation ***\nincorrect channel %d for Audio8S", a.Channel) } 
         }
         break
       case uint16:
         if a.Channel != 2 { 
-          return &AudioError { Message: fmt.Sprintf("incorrect channel %d for Audio16S", a.Channel) } 
+          return &AudioError { Message: fmt.Sprintf("*** audio validation ***\nincorrect channel %d for Audio16S", a.Channel) } 
         }
         break
     }
@@ -82,10 +82,10 @@ func clamp(value interface{}, size uint8) interface{} {
 
 func Compare(a1* Audio, a2* Audio) error {
   if a1.Size != a2.Size {
-    return &AudioError { Message: fmt.Sprintf("mismatching audio size, %d and %d", a1.Size, a2.Size) }
+    return &AudioError { Message: fmt.Sprintf("*** audio compare ***\nmismatching audio size, %d and %d", a1.Size, a2.Size) }
   }
   if a1.Length != a2.Length {
-    return &AudioError { Message: fmt.Sprintf("mismatching audio length, %d and %d", a1.Length, a2.Length) }
+    return &AudioError { Message: fmt.Sprintf("*** audio compare ***\nmismatching audio length, %d and %d", a1.Length, a2.Length) }
   }
   return nil
 }
@@ -231,7 +231,7 @@ func (input* Audio) Reverse() (output *Audio, err error) {
 
 func (input* Audio) Cut(start int64, end int64) (output* Audio, err error) {
   if end >= input.NumberOfSamples {
-    return nil, &AudioError { Message: fmt.Sprintf("invaild audio range %d - %d\n", start, end) }
+    return nil, &AudioError { Message: fmt.Sprintf("*** audio cut ***\ninvaild audio range %d - %d\n", start, end) }
   }
 
   output = &Audio {
@@ -413,7 +413,7 @@ func (input* Audio) FadeIn(second float64) (output* Audio, err error) {
 
   //check that the input audio is at leat as long as the fade-in second.
   if input.NumberOfSamples < rampLength {
-    err = &AudioError { Message: fmt.Sprintf("input audio is too short") }
+    err = &AudioError { Message: fmt.Sprintf("*** audio fade-in ***\ninput audio is too short") }
     return
   }
 
@@ -477,7 +477,7 @@ func (input* Audio) FadeOut(second float64) (output* Audio, err error) {
 
   //check that the input audio is at leat as long as the fade-in second.
   if input.NumberOfSamples < rampLength {
-    err = &AudioError { Message: fmt.Sprintf("input audio is too short") }
+    err = &AudioError { Message: fmt.Sprintf("*** audio fade-out ***\ninput audio is too short") }
     return
   }
 
