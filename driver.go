@@ -2,10 +2,13 @@ package main
 
 import (
 	"go-packages/audio"
-	"fmt"
+	// "fmt"
 	"unsafe"
 	"io/ioutil"
 	"os"
+	"encoding/json"
+	"strconv"
+	"strings"
 )
 
 type AudioFiles struct {
@@ -16,9 +19,9 @@ type AudioFile struct {
 	DirPath string `json:"dirPath"`
 	Name string `json:"name"`
 	Extension string `json:"ext"`
-	SamplingRate int16 `json:"samplingRate"`
-	Channel int8 `json:"channel"`
-	BitsPerSample int8 `json:"bitsPerSample"`
+	SamplingRate uint `json:"samplingRate"`
+	Channel uint `json:"channel"`
+	BitsPerSample int8 `json:"bitCount"`
 	Signed bool `json:"signed"`
 }
 
@@ -26,16 +29,16 @@ func check(e error) {
 	if e != nil { panic(e) }
 }
 
-func loadAudio(path string) (output* audio.Audio) {
-	f, err := os.Open(path)
+func loadAudio(file* AudioFile) (output* audio.Audio) {
+	f, err := os.Open(getAudioFilePullPath(file))
 	check(err)
 
 	fi, err := f.Stat()
 	check(err)
 	
 	output = &audio.Audio {
-		Channel: 1,
-		SamplingRate: 44100,
+		Channel: file.Channel,
+		SamplingRate: file.SamplingRate,
 		Size: fi.Size(),
 		Data: make([]byte, fi.Size()),
 	}
@@ -43,6 +46,10 @@ func loadAudio(path string) (output* audio.Audio) {
 	_, err = f.Read(output.Data.([]byte))
 	check(err)
 	defer f.Close()
+
+	output.NumberOfSamples = output.Size / (int64(unsafe.Sizeof(output.Data.([]byte)[0])) * int64(output.Channel))
+	output.Length = output.NumberOfSamples / int64(output.SamplingRate)
+
 	return
 }
 
@@ -54,7 +61,7 @@ func saveAudio(path string, file* audio.Audio) () {
 	check(err)
 }
 
-func loadAudioSettings(path string) (audioFiles* AudioFiles) {
+func loadAudioFiles(path string) (audioFiles* AudioFiles) {
 	jsonFile, err := os.Open(path)
 	check(err)
 	defer jsonFile.Close()
@@ -62,25 +69,75 @@ func loadAudioSettings(path string) (audioFiles* AudioFiles) {
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 
 	json.Unmarshal(byteValue, &audioFiles)
+	return
+}
+
+func getAudioFilePullPath(file* AudioFile) string {
+	var fullPath strings.Builder
+	fullPath.WriteString(file.DirPath)
+	fullPath.WriteString(file.Name)
+	fullPath.WriteString(file.Extension)
+	return fullPath.String()
+}
+
+func audioAddition(args []string, audioFiles* AudioFiles) (output* audio.Audio) {
+	index1, err := strconv.ParseInt(args[0], 10, 8)
+	check(err)
+	index2, err := strconv.ParseInt(args[1], 10, 8)
+	check(err)
+
+	input1 := loadAudio(&audioFiles.AudioFiles[index1])
+	input2 := loadAudio(&audioFiles.AudioFiles[index2])
+
+	output, err = input1.Plus(input2)
+	check(err)
+
+	return
+}
+
+func audioCut(args []string, audioFiles* AudioFiles) (output* audio.Audio) {
+	startRange, err := strconv.ParseInt(args[0], 10, 64)
+	check(err)
+
+	endRange, err := strconv.ParseInt(args[1], 10, 64)
+	check(err)
+
+	audioFileIndex, err := strconv.ParseInt(args[2], 10, 8)
+	check(err)
+
+	input := loadAudio(&audioFiles.AudioFiles[audioFileIndex])
+
+	output, err = input.Cut(startRange, endRange)
+	check(err)
+	return
 }
 
 func main() {
-	audioFiles := loadAudioSettings("../settings.json")
+	// driver [<ops>] soundFileIndex1 [soundFileIndex2]
+	// <ops> can be one of the following
+	// -add: add soundFile1 and soundFile2
+	// -cut r1 r2: remove samples over range [r1,r2]
+	// -radd r1 r2 s1 s2: add soundFile1 and soundFile2 over sub-ranges indicated (in seconds). The ranges must be equal in length. 
+	// -cat: concatenate soundFile1 and soundFile2
+	// -v r1 r2: volume factor for left/right audio (def=1.0/1.0) (assumes one sound file)
+	// -rev: reverse sound file (assumes one sound file only)
+	// -rms: Prints out the RMS of the soundfile (assumes one sound file only).
 
-	fmt.Printf("thete are %d audio files.\n", len(audioFiles.AudioFiles))
+	audioFiles := loadAudioFiles("../audio-files.json")
 
-	input := loadAudio("/home/ayaovi/Downloads/input_files/countdown40sec_44100_signed_8bit_mono.raw")
-	
-	input.NumberOfSamples = input.Size / (int64(unsafe.Sizeof(input.Data.([]byte)[0])) * int64(input.Channel))
-	input.Length = input.NumberOfSamples / int64(input.SamplingRate)
+	args := os.Args[1:]
 
-	fmt.Printf("size of data is %d bytes.\n", input.Size)
-	fmt.Printf("samplingRate is %d bytes long.\n", input.SamplingRate)
-	fmt.Printf("numberOfSamples is %d bytes long.\n", input.NumberOfSamples)
-	fmt.Printf("length is %d second(s).\n", input.Length)
+	operations := make(map[string]func([]string, *AudioFiles) *audio.Audio)
 
-	output, err := input.Cut(0, 617400)
-	check(err)
+	operations["-add"] = audioAddition
+	operations["-cut"] = audioCut
+	operations["-radd"] = audioAddition
+	operations["-cat"] = audioAddition
+
+	output := operations[args[0]](args[1:], audioFiles)
+
+	// output, err := input.Cut(0, 617400)
+	// check(err)
 
 	saveAudio("/home/ayaovi/Downloads/input_files/countdown14sec_44100_signed_8bit_mono.raw", output)
 }
