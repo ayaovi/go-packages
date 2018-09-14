@@ -2,7 +2,6 @@ package main
 
 import (
 	"go-packages/audio"
-	// "fmt"
 	"unsafe"
 	"io/ioutil"
 	"os"
@@ -16,9 +15,9 @@ type AudioFiles struct {
 }
 
 type AudioFile struct {
-	DirPath string `json:"dirPath"`
+	DirPath string `json:"dirPath"` // e.g. /home/some-dir/
 	Name string `json:"name"`
-	Extension string `json:"ext"`
+	Extension string `json:"ext"`	// e.g. .raw
 	SamplingRate uint `json:"samplingRate"`
 	Channel uint `json:"channel"`
 	BitsPerSample int8 `json:"bitCount"`
@@ -45,6 +44,7 @@ func loadAudio(file* AudioFile) (output* audio.Audio) {
 	
 	_, err = f.Read(output.Data.([]byte))
 	check(err)
+	
 	defer f.Close()
 
 	output.NumberOfSamples = output.Size / (int64(unsafe.Sizeof(output.Data.([]byte)[0])) * int64(output.Channel))
@@ -64,6 +64,7 @@ func saveAudio(path string, file* audio.Audio) () {
 func loadAudioFiles(path string) (audioFiles* AudioFiles) {
 	jsonFile, err := os.Open(path)
 	check(err)
+
 	defer jsonFile.Close()
 
 	byteValue, _ := ioutil.ReadAll(jsonFile)
@@ -83,6 +84,7 @@ func getAudioFilePullPath(file* AudioFile) string {
 func audioAddition(args []string, audioFiles* AudioFiles) (output* audio.Audio) {
 	index1, err := strconv.ParseInt(args[0], 10, 8)
 	check(err)
+
 	index2, err := strconv.ParseInt(args[1], 10, 8)
 	check(err)
 
