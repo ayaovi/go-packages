@@ -119,7 +119,7 @@ func (a1* Audio) Plus(a2* Audio) (a3 *Audio, err error) {
     break
   case []Pair:
     a3.Data = make([]Pair, a1.Size)
-    switch a1.Data.([]Pair)[0].First.(type){
+    switch a1.Data.([]Pair)[0].First.(type) {
       case uint8:
         for i := int64(0); i < a1.NumberOfSamples; i++ {
           a3.Data.([]Pair)[i].First = clamp(uint16(a1.Data.([]Pair)[i].First.(uint8)) + 
@@ -236,7 +236,6 @@ func (input* Audio) Cut(start int64, end int64) (output* Audio, err error) {
 
   output = &Audio {
     Channel: input.Channel,
-    Size: end - start + 1,
     SamplingRate: input.SamplingRate,
     NumberOfSamples: end - start + 1,
     Length: (end - start + 1) / int64(input.SamplingRate),
@@ -244,20 +243,30 @@ func (input* Audio) Cut(start int64, end int64) (output* Audio, err error) {
 
   switch input.Data.(type) {
   case []uint8:
-    output.Data = make([]uint8, end - start + 1)
-    for i := start; i < end + 1; i++ {
+    output.Size = output.NumberOfSamples
+    output.Data = make([]uint8, output.NumberOfSamples)
+    for i := start; i <= end; i++ {
       output.Data.([]uint8)[i - start] = input.Data.([]uint8)[i]
     }
     break
   case []uint16:
-    output.Data = make([]uint16, end - start + 1)
-    for i := start; i < end + 1; i++ {
+    output.Size = output.NumberOfSamples * 2 // a sample size is 2-bytes
+    output.Data = make([]uint16, output.NumberOfSamples)
+    for i := start; i <= end; i++ {
       output.Data.([]uint16)[i - start] = input.Data.([]uint16)[i]
     }
     break
   case []Pair:
-    output.Data = make([]Pair, end - start + 1)
-    for i := start; i < end + 1; i++ {
+    switch input.Data.([]Pair)[0].First.(type) {
+    case uint8:
+      output.Size = output.NumberOfSamples * 2 // a sample size is 2-bytes
+      break
+    case uint16:
+      output.Size = output.NumberOfSamples * 4 // a sample size is 4-bytes
+      break
+    }
+    output.Data = make([]Pair, output.NumberOfSamples)
+    for i := start; i <= end; i++ {
       output.Data.([]Pair)[i - start].First = input.Data.([]Pair)[i].First
       output.Data.([]Pair)[i - start].Second = input.Data.([]Pair)[i].Second
     }

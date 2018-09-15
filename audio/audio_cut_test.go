@@ -40,7 +40,7 @@ func TestAudioCut(t *testing.T) {
 		Data: []Pair { Pair{uint8(1), uint8(1)}, Pair{uint8(2), uint8(2)}, 
 									 Pair{uint8(3), uint8(3)}, Pair{uint8(4), uint8(4)} },
 		Channel: 2,
-		Size: 4,
+		Size: 8,
 		SamplingRate: 1,
 		NumberOfSamples: 4,
 		Length: 4,
@@ -49,7 +49,7 @@ func TestAudioCut(t *testing.T) {
   cut_8S := Audio {
 		Data: []Pair{Pair{uint8(2), uint8(2)}, Pair{uint8(3), uint8(3)}, Pair{uint8(4), uint8(4)}},
 		Channel: 2,
-		Size: 3,
+		Size: 6,
 		SamplingRate: 1,
 		NumberOfSamples: 3,
 		Length: 3,
@@ -68,7 +68,7 @@ func TestAudioCut(t *testing.T) {
 	a_16M := Audio {
 		Data: []uint16{1, 2, 3, 4},
 		Channel: 1,
-		Size: 4,
+		Size: 8,
 		SamplingRate: 1,
 		NumberOfSamples: 4,
 		Length: 4,
@@ -77,7 +77,7 @@ func TestAudioCut(t *testing.T) {
 	cut_16M := Audio {
 		Data: []uint16{2, 3, 4},
 		Channel: 1,
-		Size: 3,
+		Size: 6,
 		SamplingRate: 1,
 		NumberOfSamples: 3,
 		Length: 3,
@@ -97,7 +97,7 @@ func TestAudioCut(t *testing.T) {
 		Data: []Pair{ Pair{uint16(1), uint16(1)}, Pair{uint16(2), uint16(2)}, 
 									Pair{uint16(3), uint16(3)}, Pair{uint16(4), uint16(4)}},
 		Channel: 2,
-		Size: 4,
+		Size: 16,
 		SamplingRate: 1,
 		NumberOfSamples: 4,
 		Length: 4,
@@ -106,7 +106,7 @@ func TestAudioCut(t *testing.T) {
 	cut_16S := Audio {
 		Data: []Pair{Pair{uint16(2), uint16(2)}, Pair{uint16(3), uint16(3)}, Pair{uint16(4), uint16(4)}},
 		Channel: 2,
-		Size: 3,
+		Size: 12,
 		SamplingRate: 1,
 		NumberOfSamples: 3,
 		Length: 3,
