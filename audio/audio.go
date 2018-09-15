@@ -6,12 +6,12 @@ import (
 )
 
 type Audio struct {
-	Data interface{}
-	Channel uint
-	Size int64  /* file size in bytes. */
-	SamplingRate uint /* in Hz. */
-	NumberOfSamples int64 /* size / (sample_size * channel) */
-	Length int64
+  Data interface{}
+  Channel uint
+  Size int64  /* file size in bytes. */
+  SamplingRate uint /* in Hz. */
+  NumberOfSamples int64 /* size / (sample_size * channel) */
+  Length int64
 }
 
 type AudioError struct {
@@ -29,7 +29,7 @@ type Volume struct {
 }
 
 func (ae *AudioError) Error() string {
-	return ae.Message
+  return ae.Message
 }
 
 func (a* Audio) Validate() error {
@@ -38,22 +38,34 @@ func (a* Audio) Validate() error {
     if a.Channel != 1 { 
       return &AudioError { Message: fmt.Sprintf("*** audio validation ***\nincorrect channel %d for Audio8M", a.Channel) } 
     }
+    if a.Size != a.NumberOfSamples {
+      return &AudioError { Message: fmt.Sprintf("*** audio validation ***\nincorrect size (%d) or number of samples (%d) for Audio8M", a.Size, a.NumberOfSamples) }
+    }
     break
   case []uint16:
-    if a.Channel != 1 { 
+    if a.Channel != 1 {
       return &AudioError { Message: fmt.Sprintf("*** audio validation ***\nincorrect channel %d for Audio16M", a.Channel) } 
+    }
+    if a.Size != a.NumberOfSamples * 2 {
+      return &AudioError { Message: fmt.Sprintf("*** audio validation ***\nincorrect size (%d) or number of samples (%d) for Audio16M", a.Size, a.NumberOfSamples) }
     }
     break
   case []Pair:
     switch a.Data.([]Pair)[0].First.(type){
       case uint8:
-        if a.Channel != 2 { 
+        if a.Channel != 2 {
           return &AudioError { Message: fmt.Sprintf("*** audio validation ***\nincorrect channel %d for Audio8S", a.Channel) } 
+        }
+        if a.Size != a.NumberOfSamples * 2 {
+          return &AudioError { Message: fmt.Sprintf("*** audio validation ***\nincorrect size (%d) or number of samples (%d) for Audio8S", a.Size, a.NumberOfSamples) }
         }
         break
       case uint16:
         if a.Channel != 2 { 
           return &AudioError { Message: fmt.Sprintf("*** audio validation ***\nincorrect channel %d for Audio16S", a.Channel) } 
+        }
+        if a.Size != a.NumberOfSamples * 4 {
+          return &AudioError { Message: fmt.Sprintf("*** audio validation ***\nincorrect size (%d) or number of samples (%d) for Audio16M", a.Size, a.NumberOfSamples) }
         }
         break
     }
@@ -160,7 +172,7 @@ func (input1* Audio) Concat(input2* Audio) (output *Audio, err error) {
     NumberOfSamples: input1.NumberOfSamples + input2.NumberOfSamples,
     Length: input1.Length + input2.Length,
   }
-  
+
   switch input1.Data.(type) {
   case []uint8:
     output.Data = make([]uint8, input1.NumberOfSamples + input2.NumberOfSamples)
