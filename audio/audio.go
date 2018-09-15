@@ -87,6 +87,15 @@ func Compare(a1* Audio, a2* Audio) error {
   if a1.Length != a2.Length {
     return &AudioError { Message: fmt.Sprintf("*** audio compare ***\nmismatching audio length, %d and %d", a1.Length, a2.Length) }
   }
+  if a1.Channel != a2.Channel {
+    return &AudioError { Message: fmt.Sprintf("*** audio compare ***\nmismatching audio channel, %d and %d", a1.Channel, a2.Channel) }
+  }
+  if a1.SamplingRate != a2.SamplingRate {
+    return &AudioError { Message: fmt.Sprintf("*** audio compare ***\nmismatching audio sampling-rate, %d and %d", a1.SamplingRate, a2.SamplingRate) }
+  }
+  if a1.NumberOfSamples != a2.NumberOfSamples {
+    return &AudioError { Message: fmt.Sprintf("*** audio compare ***\nmismatching audio number of samples, %d and %d", a1.NumberOfSamples, a2.NumberOfSamples) }
+  }
   return nil
 }
 
