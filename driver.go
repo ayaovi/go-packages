@@ -29,7 +29,7 @@ func check(e error) {
 }
 
 func loadAudio(file* AudioFile) (output* audio.Audio) {
-	f, err := os.Open(getAudioFilePullPath(file))
+	f, err := os.Open(getFullAudioFilePath(file))
 	check(err)
 
 	fi, err := f.Stat()
@@ -44,7 +44,7 @@ func loadAudio(file* AudioFile) (output* audio.Audio) {
 	
 	_, err = f.Read(output.Data.([]byte))
 	check(err)
-	
+
 	defer f.Close()
 
 	output.NumberOfSamples = output.Size / (int64(unsafe.Sizeof(output.Data.([]byte)[0])) * int64(output.Channel))
@@ -73,7 +73,7 @@ func loadAudioFiles(path string) (audioFiles* AudioFiles) {
 	return
 }
 
-func getAudioFilePullPath(file* AudioFile) string {
+func getFullAudioFilePath(file* AudioFile) string {
 	var fullPath strings.Builder
 	fullPath.WriteString(file.DirPath)
 	fullPath.WriteString(file.Name)
