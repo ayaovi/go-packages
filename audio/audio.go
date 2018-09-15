@@ -106,15 +106,13 @@ func (a1* Audio) Plus(a2* Audio) (a3 *Audio, err error) {
   case []uint8:
     a3.Data = make([]uint8, a1.Size)
     for i := int64(0); i < a1.NumberOfSamples; i++ {
-      a3.Data.([]uint8)[i] = clamp(uint16(a1.Data.([]uint8)[i]) + uint16(a2.Data.([]uint8)[i]), 
-      uint8(8)).(uint8)
+      a3.Data.([]uint8)[i] = clamp(uint16(a1.Data.([]uint8)[i]) + uint16(a2.Data.([]uint8)[i]), uint8(8)).(uint8)
     }
     break
   case []uint16:
     a3.Data = make([]uint16, a1.Size)
     for i := int64(0); i < a1.NumberOfSamples; i++ {
-      a3.Data.([]uint16)[i] = clamp(uint32(a1.Data.([]uint16)[i]) + uint32(a2.Data.([]uint16)[i]), 
-      uint8(16)).(uint16)
+      a3.Data.([]uint16)[i] = clamp(uint32(a1.Data.([]uint16)[i]) + uint32(a2.Data.([]uint16)[i]), uint8(16)).(uint16)
     }
     break
   case []Pair:
@@ -122,25 +120,21 @@ func (a1* Audio) Plus(a2* Audio) (a3 *Audio, err error) {
     switch a1.Data.([]Pair)[0].First.(type) {
       case uint8:
         for i := int64(0); i < a1.NumberOfSamples; i++ {
-          a3.Data.([]Pair)[i].First = clamp(uint16(a1.Data.([]Pair)[i].First.(uint8)) + 
-          uint16(a2.Data.([]Pair)[i].First.(uint8)), uint8(8)).(uint8)
-          a3.Data.([]Pair)[i].Second = clamp(uint16(a1.Data.([]Pair)[i].Second.(uint8)) + 
-          uint16(a2.Data.([]Pair)[i].Second.(uint8)), uint8(8)).(uint8)
+          a3.Data.([]Pair)[i].First = clamp(uint16(a1.Data.([]Pair)[i].First.(uint8)) + uint16(a2.Data.([]Pair)[i].First.(uint8)), uint8(8)).(uint8)
+          a3.Data.([]Pair)[i].Second = clamp(uint16(a1.Data.([]Pair)[i].Second.(uint8)) + uint16(a2.Data.([]Pair)[i].Second.(uint8)), uint8(8)).(uint8)
         }
         break
       case uint16:
         for i := int64(0); i < a1.NumberOfSamples; i++ {
-          a3.Data.([]Pair)[i].First = clamp(uint32(a1.Data.([]Pair)[i].First.(uint16)) + 
-          uint32(a2.Data.([]Pair)[i].First.(uint16)), uint8(16)).(uint16)
-          a3.Data.([]Pair)[i].Second = clamp(uint32(a1.Data.([]Pair)[i].Second.(uint16)) + 
-          uint32(a2.Data.([]Pair)[i].Second.(uint16)), uint8(16)).(uint16)
+          a3.Data.([]Pair)[i].First = clamp(uint32(a1.Data.([]Pair)[i].First.(uint16)) + uint32(a2.Data.([]Pair)[i].First.(uint16)), uint8(16)).(uint16)
+          a3.Data.([]Pair)[i].Second = clamp(uint32(a1.Data.([]Pair)[i].Second.(uint16)) + uint32(a2.Data.([]Pair)[i].Second.(uint16)), uint8(16)).(uint16)
         }
         break
     }
     break
   }
   
-	return
+  return
 }
 
 func (input1* Audio) Concat(input2* Audio) (output *Audio, err error) {
@@ -157,7 +151,7 @@ func (input1* Audio) Concat(input2* Audio) (output *Audio, err error) {
   }
   switch input1.Data.(type) {
   case []uint8:
-    output.Data = make([]uint8, input1.Size + input2.Size)
+    output.Data = make([]uint8, input1.NumberOfSamples + input2.NumberOfSamples)
     // copy content of input1 into output.
     for i := int64(0); i < input1.NumberOfSamples; i++ {
       output.Data.([]uint8)[i] = input1.Data.([]uint8)[i]
@@ -168,7 +162,7 @@ func (input1* Audio) Concat(input2* Audio) (output *Audio, err error) {
     }
     break
   case []uint16:
-    output.Data = make([]uint16, input1.Size + input2.Size)
+    output.Data = make([]uint16, input1.NumberOfSamples + input2.NumberOfSamples)
     // copy content of input1 into output.
     for i := int64(0); i < input1.NumberOfSamples; i++ {
       output.Data.([]uint16)[i] = input1.Data.([]uint16)[i]
@@ -179,9 +173,9 @@ func (input1* Audio) Concat(input2* Audio) (output *Audio, err error) {
     }
     break
   case []Pair:
-    output.Data = make([]Pair, input1.Size + input2.Size)
+    output.Data = make([]Pair, input1.NumberOfSamples + input2.NumberOfSamples)
     // copy content of input1 into output.
-    for i := int64(0); i < input1.Size; i++ {
+    for i := int64(0); i < input1.NumberOfSamples; i++ {
       output.Data.([]Pair)[i].First = input1.Data.([]Pair)[i].First
       output.Data.([]Pair)[i].Second = input1.Data.([]Pair)[i].Second
     }
@@ -206,19 +200,19 @@ func (input* Audio) Reverse() (output *Audio, err error) {
   }
   switch input.Data.(type) {
   case []uint8:
-    output.Data = make([]uint8, input.Size)
+    output.Data = make([]uint8, input.NumberOfSamples)
     for i := int64(0); i < input.NumberOfSamples; i++ {
       output.Data.([]uint8)[i] = input.Data.([]uint8)[input.NumberOfSamples - i - 1]
     }
     break
   case []uint16:
-    output.Data = make([]uint16, input.Size)
+    output.Data = make([]uint16, input.NumberOfSamples)
     for i := int64(0); i < input.NumberOfSamples; i++ {
       output.Data.([]uint16)[i] = input.Data.([]uint16)[input.NumberOfSamples - i - 1]
     }
     break
   case []Pair:
-    output.Data = make([]Pair, input.Size)
+    output.Data = make([]Pair, input.NumberOfSamples)
     for i := int64(0); i < input.NumberOfSamples; i++ {
       output.Data.([]Pair)[i].First = input.Data.([]Pair)[input.NumberOfSamples - i - 1].First
       output.Data.([]Pair)[i].Second = input.Data.([]Pair)[input.NumberOfSamples - i - 1].Second
@@ -286,19 +280,19 @@ func (input* Audio) Amplify(vol Volume) (output* Audio, err error) {
 
   switch input.Data.(type) {
   case []uint8:
-    output.Data = make([]uint8, input.Size)
+    output.Data = make([]uint8, input.NumberOfSamples)
     for i := int64(0); i < input.NumberOfSamples; i++ {
       output.Data.([]uint8)[i] = uint8(vol.C1 * float32(input.Data.([]uint8)[i]))
     }
     break
   case []uint16:
-    output.Data = make([]uint16, input.Size)
+    output.Data = make([]uint16, input.NumberOfSamples)
     for i := int64(0); i < input.NumberOfSamples; i++ {
       output.Data.([]uint16)[i] = uint16(vol.C1 * float32(input.Data.([]uint16)[i]))
     }
     break
   case []Pair:
-    output.Data = make([]Pair, input.Size)
+    output.Data = make([]Pair, input.NumberOfSamples)
     switch input.Data.([]Pair)[0].First.(type) {
     case uint8:
       for i := int64(0); i < input.NumberOfSamples; i++ {
@@ -374,19 +368,19 @@ func (input* Audio) Norm(rms_d1 float64, rms_d2 float64) (output* Audio, err err
   }
   switch input.Data.(type) {
   case []uint8:
-    output.Data = make([]uint8, input.Size)
+    output.Data = make([]uint8, input.NumberOfSamples)
     for i := int64(0); i < input.NumberOfSamples; i++ {
       output.Data.([]uint8)[i] = clamp(uint16((rms_d1 * float64(input.Data.([]uint8)[i])) / rms_c1), uint8(8)).(uint8)
     }
     break
   case []uint16:
-    output.Data = make([]uint16, input.Size)
+    output.Data = make([]uint16, input.NumberOfSamples)
     for i := int64(0); i < input.NumberOfSamples; i++ {
       output.Data.([]uint16)[i] = clamp(uint32((rms_d1 * float64(input.Data.([]uint16)[i])) / rms_c1), uint8(16)).(uint16)
     }
     break
   case []Pair:
-    output.Data = make([]Pair, input.Size)
+    output.Data = make([]Pair, input.NumberOfSamples)
     switch input.Data.([]Pair)[0].First.(type) {
     case uint8:
       for i := int64(0); i < input.NumberOfSamples; i++ {
@@ -428,7 +422,7 @@ func (input* Audio) FadeIn(second float64) (output* Audio, err error) {
 
   switch input.Data.(type) {
   case []uint8:
-    output.Data = make([]uint8, output.Size)
+    output.Data = make([]uint8, output.NumberOfSamples)
     for i := int64(0); i < rampLength; i++ {
       output.Data.([]uint8)[i] = uint8(float64(i) / float64(rampLength) * float64(input.Data.([]uint8)[i]))
     }
@@ -437,7 +431,7 @@ func (input* Audio) FadeIn(second float64) (output* Audio, err error) {
     }
     break
   case []uint16:
-    output.Data = make([]uint16, output.Size)
+    output.Data = make([]uint16, output.NumberOfSamples)
     for i := int64(0); i < rampLength; i++ {
       output.Data.([]uint16)[i] = uint16(float64(i) / float64(rampLength) * float64(input.Data.([]uint16)[i]))
     }
@@ -446,7 +440,7 @@ func (input* Audio) FadeIn(second float64) (output* Audio, err error) {
     }
     break
   case []Pair:
-    output.Data = make([]Pair, output.Size)
+    output.Data = make([]Pair, output.NumberOfSamples)
     switch input.Data.([]Pair)[0].First.(type) {
     case uint8:
       for i := int64(0); i < rampLength; i++ {
@@ -492,7 +486,7 @@ func (input* Audio) FadeOut(second float64) (output* Audio, err error) {
 
   switch input.Data.(type) {
   case []uint8:
-    output.Data = make([]uint8, output.Size)
+    output.Data = make([]uint8, output.NumberOfSamples)
     for i := int64(0); i < rampLength; i++ {
       output.Data.([]uint8)[i] = uint8(math.Round((float64(1) - float64(i) / float64(rampLength)) * float64(input.Data.([]uint8)[i])))
     }
@@ -501,7 +495,7 @@ func (input* Audio) FadeOut(second float64) (output* Audio, err error) {
     }
     break
   case []uint16:
-    output.Data = make([]uint16, output.Size)
+    output.Data = make([]uint16, output.NumberOfSamples)
     for i := int64(0); i < rampLength; i++ {
       output.Data.([]uint16)[i] = uint16(math.Round((float64(1) - float64(i) / float64(rampLength)) * float64(input.Data.([]uint16)[i])))
     }
@@ -511,7 +505,7 @@ func (input* Audio) FadeOut(second float64) (output* Audio, err error) {
     break
 
   case []Pair:
-    output.Data = make([]Pair, output.Size)
+    output.Data = make([]Pair, output.NumberOfSamples)
     switch input.Data.([]Pair)[0].First.(type) {
     case uint8:
       for i := int64(0); i < rampLength; i++ {
