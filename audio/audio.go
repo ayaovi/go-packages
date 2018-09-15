@@ -100,10 +100,11 @@ func Compare(a1* Audio, a2* Audio) error {
 }
 
 func (a1* Audio) Plus(a2* Audio) (a3 *Audio, err error) {
-	// validate
+  // validate
   if err := Compare(a1, a2); err != nil {
     return nil, err
   }
+
   a3 = &Audio {
     Channel: a1.Channel,
     Size: a1.Size,
@@ -111,6 +112,7 @@ func (a1* Audio) Plus(a2* Audio) (a3 *Audio, err error) {
     NumberOfSamples: a1.NumberOfSamples,
     Length: a1.Length,
   }
+
   switch a1.Data.(type) {
   case []uint8:
     a3.Data = make([]uint8, a3.NumberOfSamples)
@@ -158,6 +160,7 @@ func (input1* Audio) Concat(input2* Audio) (output *Audio, err error) {
     NumberOfSamples: input1.NumberOfSamples + input2.NumberOfSamples,
     Length: input1.Length + input2.Length,
   }
+  
   switch input1.Data.(type) {
   case []uint8:
     output.Data = make([]uint8, input1.NumberOfSamples + input2.NumberOfSamples)
@@ -207,6 +210,7 @@ func (input* Audio) Reverse() (output *Audio, err error) {
     NumberOfSamples: input.NumberOfSamples,
     Length: input.Length,
   }
+
   switch input.Data.(type) {
   case []uint8:
     output.Data = make([]uint8, input.NumberOfSamples)
