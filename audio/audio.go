@@ -113,9 +113,9 @@ func Compare(a1* Audio, a2* Audio) error {
 
 func (a1* Audio) Plus(a2* Audio) (a3 *Audio, err error) {
   // validate
-  if err := Compare(a1, a2); err != nil {
-    return nil, err
-  }
+  if err = a1.Validate(); err != nil { return }
+  if err = a2.Validate(); err != nil { return }
+  if err = Compare(a1, a2); err != nil { return }
 
   a3 = &Audio {
     Channel: a1.Channel,
@@ -161,9 +161,9 @@ func (a1* Audio) Plus(a2* Audio) (a3 *Audio, err error) {
 }
 
 func (input1* Audio) Concat(input2* Audio) (output *Audio, err error) {
-  if err := Compare(input1, input2); err != nil {
-    return nil, err
-  }
+  if err = input1.Validate(); err != nil { return }
+  if err = input2.Validate(); err != nil { return }
+  if err = Compare(input1, input2); err != nil { return }
 
   output = &Audio {
     Channel: input1.Channel,
@@ -215,6 +215,8 @@ func (input1* Audio) Concat(input2* Audio) (output *Audio, err error) {
 }
 
 func (input* Audio) Reverse() (output *Audio, err error) {
+  if err = input.Validate(); err != nil { return }
+
   output = &Audio {
     Channel: input.Channel,
     Size: input.Size,
@@ -249,6 +251,8 @@ func (input* Audio) Reverse() (output *Audio, err error) {
 }
 
 func (input* Audio) Cut(start int64, end int64) (output* Audio, err error) {
+  if err = input.Validate(); err != nil { return }
+
   if end >= input.NumberOfSamples {
     return nil, &AudioError { Message: fmt.Sprintf("*** audio cut ***\ninvaild audio range %d - %d\n", start, end) }
   }
@@ -295,6 +299,8 @@ func (input* Audio) Cut(start int64, end int64) (output* Audio, err error) {
 }
 
 func (input* Audio) Amplify(vol Volume) (output* Audio, err error) {
+  if err = input.Validate(); err != nil { return }
+
   output = &Audio {
     Channel: input.Channel,
     Size: input.Size,
@@ -338,6 +344,8 @@ func (input* Audio) Amplify(vol Volume) (output* Audio, err error) {
 }
 
 func (input* Audio) Rms() (value1 float64, value2 float64 , err error) {
+  if err = input.Validate(); err != nil { return }
+
   sum1 := float64(0)
   sum2 := float64(0)
   switch input.Data.(type) {
@@ -377,7 +385,8 @@ func (input* Audio) Rms() (value1 float64, value2 float64 , err error) {
 }
 
 func (input* Audio) Norm(rms_d1 float64, rms_d2 float64) (output* Audio, err error) {
-  //validate
+  if err = input.Validate(); err != nil { return }
+
   rms_c1, rms_c2, err := input.Rms()
   
   if err != nil {
@@ -430,6 +439,8 @@ func (input* Audio) Norm(rms_d1 float64, rms_d2 float64) (output* Audio, err err
 }
 
 func (input* Audio) FadeIn(second float64) (output* Audio, err error) {
+  if err = input.Validate(); err != nil { return }
+
   output = &Audio {
     Channel: input.Channel,
     Size: input.Size,
@@ -494,6 +505,8 @@ func (input* Audio) FadeIn(second float64) (output* Audio, err error) {
 }
 
 func (input* Audio) FadeOut(second float64) (output* Audio, err error) {
+  if err = input.Validate(); err != nil { return }
+  
   output = &Audio {
     Channel: input.Channel,
     Size: input.Size,

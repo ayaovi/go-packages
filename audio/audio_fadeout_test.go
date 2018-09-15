@@ -32,7 +32,10 @@ func TestAudioFadeOut(t *testing.T) {
 		if err != nil {
 			t.Errorf("Audio8M fade-out should Pass.")
 		}
-		if !reflect.DeepEqual(fadeOut_8M, *output) {
+		if output == nil {
+			t.Errorf("Audio8M fade-out was incorrect, got: <nil>, want: %d.", fadeOut_8M)
+		}
+		if output != nil && !reflect.DeepEqual(fadeOut_8M, *output) {
 			t.Errorf("Audio8M fade-out was incorrect, got: %d, want: %d.", *output, fadeOut_8M)
 		}
 	})
@@ -40,7 +43,7 @@ func TestAudioFadeOut(t *testing.T) {
 	audio_16M := Audio {
 		Data: []uint16{10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 100},
 		Channel: 1,
-		Size: 11,
+		Size: 22,
 		SamplingRate: 1,
 		NumberOfSamples: 11,
 		Length: 11,
@@ -49,7 +52,7 @@ func TestAudioFadeOut(t *testing.T) {
 	fadeOut_16M := Audio {
 		Data: []uint16{10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 100},
 		Channel: 1,
-		Size: 11,
+		Size: 22,
 		SamplingRate: 1,
 		NumberOfSamples: 11,
 		Length: 11,
@@ -60,7 +63,10 @@ func TestAudioFadeOut(t *testing.T) {
 		if err != nil {
 			t.Errorf("Audio16M fade-out should Pass.")
 		}
-		if !reflect.DeepEqual(fadeOut_16M, *output) {
+		if output == nil {
+			t.Errorf("Audio16M fade-out was incorrect, got: <nil>, want: %d.", fadeOut_16M)
+		}
+		if output != nil && !reflect.DeepEqual(fadeOut_16M, *output) {
 			t.Errorf("Audio16M fade-out was incorrect, got: %d, want: %d.", *output, fadeOut_16M)
 		}
 	})
@@ -73,7 +79,7 @@ func TestAudioFadeOut(t *testing.T) {
 									 Pair{uint8(10), uint8(10)}, Pair{uint8(10), uint8(10)},
 									 Pair{uint8(100), uint8(100)} },
 		Channel: 2,
-		Size: 11,
+		Size: 22,
 		SamplingRate: 1,
 		NumberOfSamples: 11,
 		Length: 11,
@@ -87,7 +93,7 @@ func TestAudioFadeOut(t *testing.T) {
 									 Pair{uint8(2), uint8(2)}, Pair{uint8(1), uint8(1)},
 									 Pair{uint8(100), uint8(100)} },
 		Channel: 2,
-		Size: 11,
+		Size: 22,
 		SamplingRate: 1,
 		NumberOfSamples: 11,
 		Length: 11,
@@ -98,7 +104,10 @@ func TestAudioFadeOut(t *testing.T) {
 		if err != nil {
 			t.Errorf("Audio8S fade-out should Pass.")
 		}
-		if !reflect.DeepEqual(fadeOut_8S, *output) {
+		if output == nil {
+			t.Errorf("Audio8S fade-out was incorrect, got: <nil>, want: %d.", fadeOut_8S)
+		}
+		if output != nil && !reflect.DeepEqual(fadeOut_8S, *output) {
 			t.Errorf("Audio8S fade-out was incorrect, got: %d, want: %d.", *output, fadeOut_8S)
 		}
 	})
@@ -111,7 +120,7 @@ func TestAudioFadeOut(t *testing.T) {
 									 Pair{uint16(10), uint16(10)}, Pair{uint16(10), uint16(10)},
 									 Pair{uint16(100), uint16(100)} },
 		Channel: 2,
-		Size: 11,
+		Size: 44,
 		SamplingRate: 1,
 		NumberOfSamples: 11,
 		Length: 11,
@@ -125,7 +134,7 @@ func TestAudioFadeOut(t *testing.T) {
 									 Pair{uint16(2), uint16(2)}, Pair{uint16(1), uint16(1)},
 									 Pair{uint16(100), uint16(100)} },
 		Channel: 2,
-		Size: 11,
+		Size: 44,
 		SamplingRate: 1,
 		NumberOfSamples: 11,
 		Length: 11,
@@ -136,7 +145,10 @@ func TestAudioFadeOut(t *testing.T) {
 		if err != nil {
 			t.Errorf("Audio16S fade-out should Pass.")
 		}
-		if !reflect.DeepEqual(fadeOut_16S, *output) {
+		if output == nil {
+			t.Errorf("Audio16S fade-out was incorrect, got: <nil>, want: %d.", fadeOut_16S)
+		}
+		if output != nil && !reflect.DeepEqual(fadeOut_16S, *output) {
 			t.Errorf("Audio16S fade-out was incorrect, got: %d, want: %d.", *output, fadeOut_16S)
 		}
 	})

@@ -31,7 +31,10 @@ func TestAudioNorm(t *testing.T) {
 		if err != nil {
 			t.Errorf("Audio8M norm should Pass.")
 		}
-		if !reflect.DeepEqual(*out, norm_8M) {
+		if out == nil {
+			t.Errorf("Audio8M norm was incorrect, got: <nil> want: %d.", norm_8M)
+		}
+		if out != nil && !reflect.DeepEqual(*out, norm_8M) {
 			t.Errorf("Audio8M norm was incorrect, got: %d want: %d.", *out, norm_8M)
 		}
 	})
@@ -40,7 +43,7 @@ func TestAudioNorm(t *testing.T) {
 		Data: []Pair{ Pair{uint8(0), uint8(0)}, Pair{uint8(0), uint8(0)}, 
 									Pair{uint8(0), uint8(0)}, Pair{uint8(1), uint8(1)}},
 		Channel: 2,
-		Size: 4,
+		Size: 8,
 		SamplingRate: 1,
 		NumberOfSamples: 4,
 		Length: 4,
@@ -50,7 +53,7 @@ func TestAudioNorm(t *testing.T) {
 		Data: []Pair{ Pair{uint8(0), uint8(0)}, Pair{uint8(0), uint8(0)}, 
 									Pair{uint8(0), uint8(0)}, Pair{uint8(2), uint8(2)}},
 		Channel: 2,
-		Size: 4,
+		Size: 8,
 		SamplingRate: 1,
 		NumberOfSamples: 4,
 		Length: 4,
@@ -61,7 +64,10 @@ func TestAudioNorm(t *testing.T) {
 		if err != nil {
 			t.Errorf("Audio8S norm should Pass.")
 		}
-		if !reflect.DeepEqual(*out, norm_8S) {
+		if out == nil {
+			t.Errorf("Audio8S norm was incorrect, got: <nil> want: %d.", norm_8S)
+		}
+		if out != nil && !reflect.DeepEqual(*out, norm_8S) {
 			t.Errorf("Audio8S norm was incorrect, got: %d want: %d.", *out, norm_8S)
 		}
 	})
@@ -69,7 +75,7 @@ func TestAudioNorm(t *testing.T) {
 	a_16M := Audio {
 		Data: []uint16{0, 0, 0, 1},
 		Channel: 1,
-		Size: 4,
+		Size: 8,
 		SamplingRate: 1,
 		NumberOfSamples: 4,
 		Length: 4,
@@ -78,7 +84,7 @@ func TestAudioNorm(t *testing.T) {
 	norm_16M := Audio {
 		Data: []uint16{0, 0, 0, 2},
 		Channel: 1,
-		Size: 4,
+		Size: 8,
 		SamplingRate: 1,
 		NumberOfSamples: 4,
 		Length: 4,
@@ -89,7 +95,10 @@ func TestAudioNorm(t *testing.T) {
 		if err != nil {
 			t.Errorf("Audio16M norm should Pass.")
 		}
-		if !reflect.DeepEqual(*out, norm_16M) {
+		if out == nil {
+			t.Errorf("Audio16M norm was incorrect, got: <nil> want: %d.", norm_16M)
+		}
+		if out != nil && !reflect.DeepEqual(*out, norm_16M) {
 			t.Errorf("Audio16M norm was incorrect, got: %d want: %d.", *out, norm_16M)
 		}
 	})
@@ -98,7 +107,7 @@ func TestAudioNorm(t *testing.T) {
 		Data: []Pair{ Pair{uint16(0), uint16(0)}, Pair{uint16(0), uint16(0)}, 
 									Pair{uint16(0), uint16(0)}, Pair{uint16(1), uint16(1)}},
 		Channel: 2,
-		Size: 4,
+		Size: 16,
 		SamplingRate: 1,
 		NumberOfSamples: 4,
 		Length: 4,
@@ -108,7 +117,7 @@ func TestAudioNorm(t *testing.T) {
 		Data: []Pair{ Pair{uint16(0), uint16(0)}, Pair{uint16(0), uint16(0)}, 
 									Pair{uint16(0), uint16(0)}, Pair{uint16(2), uint16(2)}},
 		Channel: 2,
-		Size: 4,
+		Size: 16,
 		SamplingRate: 1,
 		NumberOfSamples: 4,
 		Length: 4,
@@ -119,7 +128,10 @@ func TestAudioNorm(t *testing.T) {
 		if err != nil {
 			t.Errorf("Audio16S norm should Pass.")
 		}
-		if !reflect.DeepEqual(*out, norm_16S) {
+		if out == nil {
+			t.Errorf("Audio16S norm was incorrect, got: <nil> want: %d.", norm_16S)
+		}
+		if out != nil && !reflect.DeepEqual(*out, norm_16S) {
 			t.Errorf("Audio16S norm was incorrect, got: %d want: %d.", *out, norm_16S)
 		}
 	})

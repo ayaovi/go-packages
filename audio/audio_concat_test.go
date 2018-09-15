@@ -31,7 +31,10 @@ func TestAudioConcat(t *testing.T) {
 		if err != nil {
 			t.Errorf("Audio8M concatenation should Pass.")
 		}
-		if !reflect.DeepEqual(concat_8M, *out) {
+		if out == nil {
+			t.Errorf("Audio8M concatenation was incorrect, got: <nil>, want: %d.", concat_8M)
+		}
+		if out != nil && !reflect.DeepEqual(concat_8M, *out) {
 			t.Errorf("Audio8M concatenation was incorrect, got: %d, want: %d.", *out, concat_8M)
 		}
 	})
@@ -40,7 +43,7 @@ func TestAudioConcat(t *testing.T) {
 		Data: []Pair { Pair{uint8(1), uint8(1)}, Pair{uint8(2), uint8(2)}, 
 									 Pair{uint8(3), uint8(3)}, Pair{uint8(4), uint8(4)} },
 		Channel: 2,
-		Size: 4,
+		Size: 8,
 		SamplingRate: 1,
 		NumberOfSamples: 4,
 		Length: 4,
@@ -52,7 +55,7 @@ func TestAudioConcat(t *testing.T) {
 									Pair{uint8(1), uint8(1)}, Pair{uint8(2), uint8(2)}, 
 									Pair{uint8(3), uint8(3)}, Pair{uint8(4), uint8(4)}},
 		Channel: 2,
-		Size: 8,
+		Size: 16,
 		SamplingRate: 1,
 		NumberOfSamples: 8,
 		Length: 8,
@@ -63,7 +66,10 @@ func TestAudioConcat(t *testing.T) {
 		if err != nil {
 			t.Errorf("Audio8S concatenation should Pass.")
 		}
-		if !reflect.DeepEqual(concat_8S, *out) {
+		if out == nil {
+			t.Errorf("Audio8S concatenation was incorrect, got: <nil>, want: %d.", concat_8S)
+		}
+		if out != nil && !reflect.DeepEqual(concat_8S, *out) {
 			t.Errorf("Audio8S concatenation was incorrect, got: %d, want: %d.", *out, concat_8S)
 		}
 	})
@@ -71,7 +77,7 @@ func TestAudioConcat(t *testing.T) {
 	a_16M := Audio {
 		Data: []uint16{150, 150, 150, 150},
 		Channel: 1,
-		Size: 4,
+		Size: 8,
 		SamplingRate: 1,
 		NumberOfSamples: 4,
 		Length: 4,
@@ -80,7 +86,7 @@ func TestAudioConcat(t *testing.T) {
 	concat_16M := Audio {
 		Data: []uint16{150, 150, 150, 150, 150, 150, 150, 150},
 		Channel: 1,
-		Size: 8,
+		Size: 16,
 		SamplingRate: 1,
 		NumberOfSamples: 8,
 		Length: 8,
@@ -91,7 +97,10 @@ func TestAudioConcat(t *testing.T) {
 		if err != nil {
 			t.Errorf("Audio16M concatenation should Pass.")
 		}
-		if !reflect.DeepEqual(concat_16M, *out) {
+		if out == nil {
+			t.Errorf("Audio16M concatenation was incorrect, got: <nil>, want: %d.", concat_16M)
+		}
+		if out != nil && !reflect.DeepEqual(concat_16M, *out) {
 			t.Errorf("Audio16M concatenation was incorrect, got: %d, want: %d.", *out, concat_16M)
 		}
 	})
@@ -100,7 +109,7 @@ func TestAudioConcat(t *testing.T) {
 		Data: []Pair { Pair{uint16(1), uint16(1)}, Pair{uint16(2), uint16(2)}, 
 									 Pair{uint16(3), uint16(3)}, Pair{uint16(4), uint16(4)} },
 		Channel: 2,
-		Size: 4,
+		Size: 16,
 		SamplingRate: 1,
 		NumberOfSamples: 4,
 		Length: 4,
@@ -112,7 +121,7 @@ func TestAudioConcat(t *testing.T) {
 									Pair{uint16(1), uint16(1)}, Pair{uint16(2), uint16(2)}, 
 									Pair{uint16(3), uint16(3)}, Pair{uint16(4), uint16(4)}},
 		Channel: 2,
-		Size: 8,
+		Size: 32,
 		SamplingRate: 1,
 		NumberOfSamples: 8,
 		Length: 8,
@@ -123,7 +132,10 @@ func TestAudioConcat(t *testing.T) {
 		if err != nil {
 			t.Errorf("Audio16S concatenation should Pass.")
 		}
-		if !reflect.DeepEqual(concat_16S, *out) {
+		if out == nil {
+			t.Errorf("Audio16S concatenation was incorrect, got: <nil>, want: %d.", concat_16S)
+		}
+		if out != nil && !reflect.DeepEqual(concat_16S, *out) {
 			t.Errorf("Audio16S concatenation was incorrect, got: %d, want: %d.", *out, concat_16S)
 		}
   })

@@ -31,7 +31,10 @@ func TestAudioCut(t *testing.T) {
 		if err != nil {
 			t.Errorf("Audio8M cut should Pass.")
 		}
-		if !reflect.DeepEqual(cut_8M, *out) {
+		if out == nil {
+			t.Errorf("Audio8M cut was incorrect, got: <nil>, want: %d.", cut_8M)
+		}
+		if out != nil && !reflect.DeepEqual(cut_8M, *out) {
 			t.Errorf("Audio8M cut was incorrect, got: %d, want: %d.", *out, cut_8M)
 		}
 	})
@@ -60,7 +63,10 @@ func TestAudioCut(t *testing.T) {
 		if err != nil {
 			t.Errorf("Audio8S cut should Pass.")
 		}
-		if !reflect.DeepEqual(cut_8S, *out) {
+		if out == nil {
+			t.Errorf("Audio8S cut was incorrect, got: <nil>, want: %d.", cut_8S)
+		}
+		if out != nil && !reflect.DeepEqual(cut_8S, *out) {
 			t.Errorf("Audio8S cut was incorrect, got: %d, want: %d.", *out, cut_8S)
 		}
 	})
@@ -88,7 +94,10 @@ func TestAudioCut(t *testing.T) {
 		if err != nil {
 			t.Errorf("Audio16M cut should Pass.")
 		}
-		if !reflect.DeepEqual(cut_16M, *out) {
+		if out == nil {
+			t.Errorf("Audio16M cut was incorrect, got: <nil>, want: %d.", cut_16M)
+		}
+		if out != nil && !reflect.DeepEqual(cut_16M, *out) {
 			t.Errorf("Audio16M cut was incorrect, got: %d, want: %d.", *out, cut_16M)
 		}
 	})
@@ -117,7 +126,10 @@ func TestAudioCut(t *testing.T) {
 		if err != nil {
 			t.Errorf("Audio16S cut should Pass.")
 		}
-		if !reflect.DeepEqual(cut_16S, *out) {
+		if out == nil {
+			t.Errorf("Audio16S cut was incorrect, got: <nil>, want: %d.", cut_16S)
+		}
+		if out != nil && !reflect.DeepEqual(cut_16S, *out) {
 			t.Errorf("Audio16S cut was incorrect, got: %d, want: %d.", *out, cut_16S)
 		}
 	})
